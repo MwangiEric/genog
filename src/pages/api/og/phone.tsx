@@ -55,7 +55,7 @@ export default function handler(req: Request) {
     const resp = new ImageResponse(jsx, { width: 1080, height: 1920 });
     console.log('[OG] ImageResponse OK');
     return resp;
-  } catch (err) {
+} catch (err: any) { 
     console.error('[OG] ImageResponse threw:', err);
     // fallback black square so you still see *something*
     return new ImageResponse(
