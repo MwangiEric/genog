@@ -2,7 +2,7 @@
 import { ImageResponse } from '@vercel/og';
 export const config = { runtime: 'edge' };
 
-const logoBuf = fetch('https://ik.imagekit.io/ericmwangi/tklogo.webp?tr=w-320,h-80,q-80').then((r) => r.arrayBuffer());
+const logoBuf = fetch('https://ik.imagekit.io/ericmwangi/tklogo.png').then((r) => r.arrayBuffer());
 
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url);
