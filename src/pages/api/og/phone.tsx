@@ -5,16 +5,12 @@ export const config = { runtime: 'edge' };
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url);
 
-  // 1. DATA INPUTS
   const device = searchParams.get('device') || 'SMARTPHONE';
   const price = searchParams.get('price') || '0';
   const brand = searchParams.get('brand') || 'Samsung';
-  
-  // Specs format: "Processor:Snapdragon 8 Gen 3,Battery:5000 mAh,Camera:200 MP"
   const specsRaw = searchParams.get('specs') || "";
   const specs = specsRaw.split(',').filter(Boolean).map(s => s.split(':'));
 
-  // 2. BRAND CONFIG (Colors & Icons from your JSON)
   const COLORS = {
     bg_top: "#0F0A0A",
     mint: "#3EB489",
@@ -43,22 +39,16 @@ export default async function handler(req: Request) {
         position: 'relative', color: 'white'
       }}>
         
-        {/* TOP: LOGO & BRAND BADGE */}
+        {/* TOP BAR */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-          <img 
-            src={ICONS.logo} 
-            width={300} 
-            height={90} 
-            style={{ objectFit: 'contain' }} 
-          />
+          <img src={ICONS.logo} width={300} height={90} style={{ objectFit: 'contain' }} />
           <div style={{ 
             display: 'flex', 
             background: 'rgba(197, 160, 89, 0.1)', 
             border: `1.5px solid ${COLORS.gold}`, 
-            padding: '10px 25px', 
-            borderRadius: 15 
+            padding: '10px 25px', borderRadius: 15 
           }}>
-            <span style={{ color: COLORS.gold, fontSize: 24, fontWeight: 'bold' }}>
+            <span style={{ display: 'flex', color: COLORS.gold, fontSize: 24, fontWeight: 'bold' }}>
                 {brand.toUpperCase()} CERTIFIED
             </span>
           </div>
@@ -66,22 +56,22 @@ export default async function handler(req: Request) {
 
         {/* DEVICE HEADER */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 80 }}>
-          <span style={{ fontSize: 100, fontWeight: 900, textAlign: 'center', textTransform: 'uppercase', letterSpacing: -3 }}>
+          <span style={{ display: 'flex', fontSize: 100, fontWeight: 900, textAlign: 'center', textTransform: 'uppercase', letterSpacing: -3 }}>
             {device}
           </span>
-          <div style={{ background: COLORS.mint, padding: '15px 50px', borderRadius: 20, marginTop: 25 }}>
-            <span style={{ fontSize: 55, fontWeight: 'bold' }}>KES {price}</span>
+          <div style={{ display: 'flex', background: COLORS.mint, padding: '15px 50px', borderRadius: 20, marginTop: 25 }}>
+            <span style={{ display: 'flex', fontSize: 55, fontWeight: 700 }}>KES {price}</span>
           </div>
         </div>
 
-        {/* MIDDLE: PIL LANDING ZONE (The phone image will be stamped here) */}
+        {/* MIDDLE PIL ZONE */}
         <div style={{ 
           display: 'flex', flex: 1, width: '100%', 
           justifyContent: 'center', alignItems: 'center',
           position: 'relative'
         }}>
-          {/* Background Glow */}
           <div style={{
+            display: 'flex', 
             width: 750, height: 750,
             background: `radial-gradient(circle, ${COLORS.gold}15 0%, transparent 75%)`,
             borderRadius: '50%',
@@ -100,10 +90,10 @@ export default async function handler(req: Request) {
               }}>
                 <img src={icon} width={55} height={55} style={{ marginRight: 25 }} />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ color: COLORS.gold, fontSize: 18, fontWeight: 'bold', textTransform: 'uppercase' }}>
+                  <span style={{ display: 'flex', color: COLORS.gold, fontSize: 18, fontWeight: 'bold', textTransform: 'uppercase' }}>
                     {label}
                   </span>
-                  <span style={{ fontSize: 32, fontWeight: 'bold' }}>{value}</span>
+                  <span style={{ display: 'flex', fontSize: 32, fontWeight: 'bold' }}>{value}</span>
                 </div>
               </div>
             );
@@ -118,11 +108,11 @@ export default async function handler(req: Request) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
             <img src={ICONS.whatsapp} width={45} height={45} />
-            <span style={{ fontSize: 34, fontWeight: 'bold' }}>+254 704 554 445</span>
+            <span style={{ display: 'flex', fontSize: 34, fontWeight: 'bold' }}>+254 704 554 445</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <img src={ICONS.location} width={30} height={30} style={{ filter: 'invert(1)', opacity: 0.6 }} />
-            <span style={{ fontSize: 24, color: '#888' }}>CBD, Nairobi</span>
+            <span style={{ display: 'flex', fontSize: 24, color: '#888' }}>CBD, Nairobi</span>
           </div>
         </div>
 
