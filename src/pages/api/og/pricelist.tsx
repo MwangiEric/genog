@@ -84,7 +84,7 @@ export default async function handler(req: Request) {
                 <span style={{ color: '#FFD700', fontSize: 24, marginTop: 5 }}>{spec}</span>
               </div>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <span style={{ color: '#3EB489', fontSize: 50, fontWeight: '900' }}>Ksh {price}</span>
+                <span style={{ color: '#3EB489', fontSize: 50, fontWeight: 900 }}>Ksh {price}</span>
                 <span style={{ color: '#444', fontSize: 20 }}>Incl. Warranty</span>
               </div>
             </div>
@@ -101,7 +101,7 @@ export default async function handler(req: Request) {
             <span style={{ color: 'black', fontSize: 32, fontWeight: 'bold' }}>TRIPLE K SOLUTIONS</span>
             <span style={{ color: 'black', fontSize: 22 }}>Quality Devices, Affordable Prices</span>
           </div>
-          <span style={{ color: 'black', fontSize: 40, fontWeight: '900' }}>{contact}</span>
+          <span style={{ color: 'black', fontSize: 40, fontWeight: 900 }}>{contact}</span>
         </div>
       </div>
     ),
