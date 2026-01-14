@@ -5,14 +5,16 @@ export const config = { runtime: 'edge' };
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url);
 
-  // 1. Data Parsing
-  const device = searchParams.get('device') || 'Smartphone';
+  // 1. DATA INPUTS
+  const device = searchParams.get('device') || 'SMARTPHONE';
   const price = searchParams.get('price') || '0';
-  // Specs format: "Processor:Snapdragon G3,Battery:5000mAh,Camera:108MP"
+  const brand = searchParams.get('brand') || 'Samsung';
+  
+  // Specs format: "Processor:Snapdragon 8 Gen 3,Battery:5000 mAh,Camera:200 MP"
   const specsRaw = searchParams.get('specs') || "";
   const specs = specsRaw.split(',').filter(Boolean).map(s => s.split(':'));
 
-  // 2. CONFIG Mapping
+  // 2. BRAND CONFIG (Colors & Icons from your JSON)
   const COLORS = {
     bg_top: "#0F0A0A",
     mint: "#3EB489",
@@ -20,7 +22,8 @@ export default async function handler(req: Request) {
     white: "#FFFFFF"
   };
 
-  const ICONS = {
+  const ICONS: Record<string, string> = {
+    logo: "https://ik.imagekit.io/ericmwangi/tklogo.png",
     processor: "https://ik.imagekit.io/ericmwangi/processor.png",
     battery: "https://ik.imagekit.io/ericmwangi/battery.png",
     camera: "https://ik.imagekit.io/ericmwangi/camera.png",
@@ -36,75 +39,90 @@ export default async function handler(req: Request) {
         height: '100%', width: '100%',
         display: 'flex', flexDirection: 'column',
         backgroundColor: COLORS.bg_top,
-        padding: '60px', fontFamily: 'sans-serif',
+        padding: '80px 60px', fontFamily: 'sans-serif',
         position: 'relative', color: 'white'
       }}>
         
-        {/* TOP BAR: Logo & Certified Badge */}
+        {/* TOP: LOGO & BRAND BADGE */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-          <img src="https://ik.imagekit.io/ericmwangi/tklogo.png" width={250} height={80} style={{ objectFit: 'contain' }} />
-          <div style={{ display: 'flex', background: 'rgba(197, 160, 89, 0.1)', border: `1px solid ${COLORS.gold}`, padding: '8px 20px', borderRadius: 12 }}>
-            <span style={{ color: COLORS.gold, fontSize: 22, fontWeight: 'bold' }}>SAMSUNG CERTIFIED</span>
+          <img 
+            src={ICONS.logo} 
+            width={300} 
+            height={90} 
+            style={{ objectFit: 'contain' }} 
+          />
+          <div style={{ 
+            display: 'flex', 
+            background: 'rgba(197, 160, 89, 0.1)', 
+            border: `1.5px solid ${COLORS.gold}`, 
+            padding: '10px 25px', 
+            borderRadius: 15 
+          }}>
+            <span style={{ color: COLORS.gold, fontSize: 24, fontWeight: 'bold' }}>
+                {brand.toUpperCase()} CERTIFIED
+            </span>
           </div>
         </div>
 
-        {/* TITLE SECTION */}
+        {/* DEVICE HEADER */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 80 }}>
-          <span style={{ fontSize: 90, fontWeight: 900, textTransform: 'uppercase', letterSpacing: -2 }}>{device}</span>
-          <div style={{ display: 'flex', alignItems: 'center', marginTop: 15 }}>
-            <div style={{ background: COLORS.mint, padding: '12px 45px', borderRadius: 15 }}>
-              <span style={{ fontSize: 45, fontWeight: 'bold' }}>KES {price}</span>
-            </div>
+          <span style={{ fontSize: 100, fontWeight: 900, textAlign: 'center', textTransform: 'uppercase', letterSpacing: -3 }}>
+            {device}
+          </span>
+          <div style={{ background: COLORS.mint, padding: '15px 50px', borderRadius: 20, marginTop: 25 }}>
+            <span style={{ fontSize: 55, fontWeight: 'bold' }}>KES {price}</span>
           </div>
         </div>
 
-        {/* CENTER HOLE: PIL will paste the phone image here */}
+        {/* MIDDLE: PIL LANDING ZONE (The phone image will be stamped here) */}
         <div style={{ 
           display: 'flex', flex: 1, width: '100%', 
-          justifyContent: 'center', alignItems: 'center', 
-          margin: '40px 0' 
+          justifyContent: 'center', alignItems: 'center',
+          position: 'relative'
         }}>
-          {/* Subtle Glow beneath where the phone will be */}
+          {/* Background Glow */}
           <div style={{
-            width: 700, height: 700,
-            background: `radial-gradient(circle, ${COLORS.gold}15 0%, transparent 70%)`,
+            width: 750, height: 750,
+            background: `radial-gradient(circle, ${COLORS.gold}15 0%, transparent 75%)`,
             borderRadius: '50%',
           }} />
         </div>
 
-        {/* SPECS GRID (Icon + Label + Value) */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 15, marginBottom: 120 }}>
-          {specs.map(([key, val], i) => {
-            const iconUrl = ICONS[key.toLowerCase() as keyof typeof ICONS] || ICONS.processor;
+        {/* SPECS SECTION */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginBottom: 100 }}>
+          {specs.map(([label, value], i) => {
+            const icon = ICONS[label.toLowerCase()] || ICONS.processor;
             return (
               <div key={i} style={{
                 display: 'flex', alignItems: 'center',
-                background: '#151515', padding: '20px 30px',
-                borderRadius: 25, border: '1px solid #222', width: '100%'
+                background: '#151515', padding: '25px 35px',
+                borderRadius: 30, border: '1px solid #252525', width: '100%'
               }}>
-                <img src={iconUrl} width={45} height={45} style={{ marginRight: 20 }} />
+                <img src={icon} width={55} height={55} style={{ marginRight: 25 }} />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ color: COLORS.gold, fontSize: 18, fontWeight: 'bold', textTransform: 'uppercase' }}>{key}</span>
-                  <span style={{ fontSize: 28, fontWeight: 'bold' }}>{val}</span>
+                  <span style={{ color: COLORS.gold, fontSize: 18, fontWeight: 'bold', textTransform: 'uppercase' }}>
+                    {label}
+                  </span>
+                  <span style={{ fontSize: 32, fontWeight: 'bold' }}>{value}</span>
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* FOOTER BAR */}
+        {/* FOOTER */}
         <div style={{ 
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          background: '#1A1A1A', padding: '30px 40px', borderRadius: 30,
+          background: '#1A1A1A', padding: '35px 45px', borderRadius: 40,
           border: '1px solid #333'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
-            <img src={ICONS.whatsapp} width={40} height={40} />
-            <span style={{ fontSize: 32, fontWeight: 'bold' }}>+254 700 123 456</span>
+            <img src={ICONS.whatsapp} width={45} height={45} />
+            <span style={{ fontSize: 34, fontWeight: 'bold' }}>+254 704 554 445</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <img src={ICONS.location} width={30} height={30} style={{ filter: 'invert(1)' }} />
-            <span style={{ fontSize: 22, color: '#888' }}>CBD, Nairobi</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img src={ICONS.location} width={30} height={30} style={{ filter: 'invert(1)', opacity: 0.6 }} />
+            <span style={{ fontSize: 24, color: '#888' }}>CBD, Nairobi</span>
           </div>
         </div>
 
