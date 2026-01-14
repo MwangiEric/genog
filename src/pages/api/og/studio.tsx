@@ -2,126 +2,124 @@ import { ImageResponse } from '@vercel/og';
 
 export const config = { runtime: 'edge' };
 
-// We'll use a placeholder for the logo as well
-const LOGO_PLACEHOLDER = 'data:image/svg+xml;base64,' + Buffer.from(
-  `<svg width="320" height="80" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-     <rect width="320" height="80" fill="#FFD700"/>
-     <text x="160" y="50" font-family="sans-serif" font-size="40" fill="#0F0A0A" text-anchor="middle">TRIPLE K</text>
+const LOGO_DATA = 'data:image/svg+xml;base64,' + Buffer.from(
+  `<svg width="400" height="100" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+     <rect width="400" height="100" rx="15" fill="#FFD700"/>
+     <text x="200" y="65" font-family="sans-serif" font-weight="900" font-size="50" fill="black" text-anchor="middle">TRIPLE K</text>
    </svg>`
 ).toString('base64');
 
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url);
   
-  // Route Logic
-  const template = searchParams.get('template') || 'single'; 
-  const device   = searchParams.get('device')   || 'Awesome Gadget';
-  const price    = searchParams.get('price')    || '999';
-  const text1    = searchParams.get('text1')    || 'Discover More';
-  const text2    = searchParams.get('text2')    || 'Limited Stock!';
+  // Business Info (Triple K Defaults)
+  const phone = searchParams.get('phone') || '+254 704 554 445';
+  const location = searchParams.get('loc') || 'Nairobi, Kenya';
+  const email = 'info@triplek.co.ke';
+  const date = new Date().toLocaleDateString('en-GB');
 
-  // Grid & Showcase Logic
-  const itemsRaw = searchParams.get('items')    || 'Item 1,Item 2,Item 3,Item 4'; // Max 4 items
-  const items = itemsRaw.split(',').filter(Boolean).slice(0, 4);
+  // Categories
+  const category = searchParams.get('category') || '8GB RAM | 256GB ROM';
+  const brand = searchParams.get('brand') || 'Samsung Official';
 
-  // Specs Logic
-  const specsRaw = searchParams.get('specs')    || 'Fast:2.5GHz,Big:6.7",Cam:48MP,Bat:5000mAh'; // "icon:value"
-  const specs = specsRaw.split(',').filter(Boolean).map(s => s.split(':'));
+  // Items: "Name:Price:Specs"
+  const itemsRaw = searchParams.get('items') || 'Device:Price:Spec';
+  const items = itemsRaw.split(',').map(item => item.split(':')).slice(0, 4);
 
-  // --- TEMPLATE: 4-ITEM GRID (Catalog Preview) ---
-  if (template === 'grid') {
-    return new ImageResponse(
-      (
-        <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#0F0A0A', padding: 50 }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 60 }}>
-            <img src={LOGO_PLACEHOLDER} width={360} height={90} />
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 30, justifyContent: 'center', flex: 1 }}>
-            {items.map((itemText, i) => (
-              <div key={i} style={{ display: 'flex', flexDirection: 'column', width: '460px', height: '700px', background: '#141414', borderRadius: 40, alignItems: 'center', padding: 30, border: '1px solid #222' }}>
-                <div style={{ display: 'flex', width: 380, height: 380, background: '#444', borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
-                  <span style={{ color: '#DDD', fontSize: 30 }}>{itemText}</span>
-                </div>
-                <span style={{ display: 'flex', color: 'white', fontSize: 45, fontWeight: 'bold', textAlign: 'center' }}>{itemText}</span>
-                <span style={{ display: 'flex', color: '#3EB489', fontSize: 35, marginTop: 10 }}>Ksh. {Math.floor(Math.random() * 50000 + 10000)}</span>
-              </div>
-            ))}
-          </div>
-          <div style={{ display: 'flex', marginTop: 'auto', justifyContent: 'center', borderTop: '1px solid #333', paddingTop: 40 }}>
-            <span style={{ display: 'flex', color: '#FFD700', fontSize: 40 }}>Triple K - {text1}</span>
-          </div>
-        </div>
-      ),
-      { width: 1080, height: 1920 }
-    );
-  }
-
-  // --- TEMPLATE: FULL PAGE CATALOG (Showcase) ---
-  if (template === 'showcase') {
-    return new ImageResponse(
-      (
-        <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#0F0A0A', padding: 40 }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
-            <img src={LOGO_PLACEHOLDER} width={400} height={100} />
-          </div>
-          <h1 style={{ display: 'flex', color: 'white', fontSize: 90, textAlign: 'center', marginBottom: 50 }}>Full Catalog</h1>
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, flex: 1, justifyContent: 'center' }}>
-            {items.map((itemText, i) => (
-              <div key={i} style={{ display: 'flex', flexDirection: 'column', width: '45%', background: '#141414', borderRadius: 20, alignItems: 'center', padding: 20, border: '1px solid #333' }}>
-                <div style={{ display: 'flex', width: '100%', height: 250, background: '#555', borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                  <span style={{ color: '#EEE', fontSize: 25 }}>{itemText}</span>
-                </div>
-                <span style={{ display: 'flex', color: 'white', fontSize: 35, fontWeight: 'bold', textAlign: 'center' }}>{itemText}</span>
-                <span style={{ display: 'flex', color: '#3EB489', fontSize: 28, marginTop: 5 }}>Ksh. {Math.floor(Math.random() * 30000 + 5000)}</span>
-              </div>
-            ))}
-          </div>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 40, borderTop: '1px solid #444', paddingTop: 30 }}>
-            <span style={{ display: 'flex', color: '#FFD700', fontSize: 45, fontWeight: 'bold' }}>{text1}</span>
-            <span style={{ display: 'flex', color: 'white', fontSize: 35, marginTop: 10 }}>{text2}</span>
-          </div>
-        </div>
-      ),
-      { width: 1080, height: 1920 }
-    );
-  }
-
-  // --- TEMPLATE: SINGLE POSTER WITH ICON SPECS (Default) ---
   return new ImageResponse(
     (
-      <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#0F0A0A', alignItems: 'center', padding: 60 }}>
-        {/* Branding */}
-        <div style={{ display: 'flex', marginBottom: 40 }}>
-          <img src={LOGO_PLACEHOLDER} width={400} height={100} />
+      <div style={{
+        height: '100%', width: '100%',
+        display: 'flex', flexDirection: 'column',
+        backgroundColor: '#0F0A0A', padding: 60,
+        fontFamily: 'sans-serif', position: 'relative'
+      }}>
+        
+        {/* WATERMARK BACKGROUND */}
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%) rotate(-30deg)',
+          fontSize: 200, color: 'rgba(255, 215, 0, 0.03)',
+          fontWeight: 900, whiteSpace: 'nowrap', pointerEvents: 'none'
+        }}>
+          TRIPLE K VERIFIED
         </div>
 
-        {/* Hero Image Placeholder */}
-        <div style={{ display: 'flex', height: 850, width: 950, justifyContent: 'center', alignItems: 'center', background: 'radial-gradient(circle, #1a0a0a 0%, #0F0A0A 70%)', borderRadius: 30 }}>
-          <div style={{ display: 'flex', width: 750, height: 750, background: '#444', borderRadius: 20, justifyContent: 'center', alignItems: 'center' }}>
-            <span style={{ color: '#DDD', fontSize: 50 }}>{device} Image</span>
+        {/* TOP SECTION: Branding & Quotation */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 40 }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <img src={LOGO_DATA} width={300} height={75} />
+            <span style={{ color: '#FFD700', fontSize: 24, marginTop: 15, fontWeight: 'bold' }}>Premium Mobile Solutions</span>
+            <span style={{ color: '#888', fontSize: 22 }}>{location}</span>
+            <span style={{ color: '#888', fontSize: 22 }}>{phone}</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+            <div style={{ display: 'flex', background: 'rgba(62, 180, 137, 0.1)', padding: '10px 20px', borderRadius: 10, border: '1px solid #3EB489', marginBottom: 15 }}>
+               <span style={{ color: '#3EB489', fontSize: 24, fontWeight: 'bold' }}>SAMSUNG CERTIFIED</span>
+            </div>
+            <span style={{ color: 'white', fontSize: 55, fontWeight: 'bold' }}>QUOTATION</span>
+            <span style={{ color: '#666', fontSize: 24 }}>ID: TK-{Math.floor(1000 + Math.random() * 9000)}</span>
           </div>
         </div>
 
-        {/* Details */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-          <h1 style={{ display: 'flex', fontSize: 120, color: 'white', fontWeight: 900, textAlign: 'center', marginBottom: 0, marginTop: 40 }}>{device}</h1>
-          <div style={{ display: 'flex', height: 6, width: 300, backgroundColor: '#FFD700', margin: '20px 0' }} />
-          <span style={{ display: 'flex', fontSize: 90, color: '#3EB489', fontWeight: 'bold' }}>KES {price}</span>
+        {/* CATEGORY & HARDWARE FILTER */}
+        <div style={{ 
+          display: 'flex', width: '100%', background: '#1A1A1A', 
+          padding: '25px 40px', borderRadius: 25, marginBottom: 40,
+          borderLeft: '12px solid #FFD700', justifyContent: 'space-between', alignItems: 'center'
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ color: 'white', fontSize: 45, fontWeight: 'bold' }}>{brand}</span>
+            <span style={{ color: '#666', fontSize: 22, marginTop: 5 }}>Official Retail Partner</span>
+          </div>
+          <div style={{ display: 'flex', background: '#333', padding: '10px 25px', borderRadius: 15 }}>
+            <span style={{ color: '#FFD700', fontSize: 28 }}>{category}</span>
+          </div>
         </div>
 
-        {/* Spec Icons Grid */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 20, marginTop: 60, width: '100%' }}>
-          {specs.map(([icon, val], i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', background: '#1A1A1A', padding: '15px 35px', borderRadius: 30, border: '1px solid rgba(255,215,0,0.3)' }}>
-              {/* Icon Placeholder */}
-              <div style={{ display: 'flex', width: 45, height: 45, background: '#FFD700', borderRadius: '50%', marginRight: 20, justifyContent: 'center', alignItems: 'center' }}>
-                <span style={{ color: '#0F0A0A', fontSize: 20 }}>{icon[0].toUpperCase()}</span> {/* First letter of icon type */}
+        {/* GRID OF PRODUCTS */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 30, justifyContent: 'center' }}>
+          {items.map(([name, price, spec], i) => (
+            <div key={i} style={{
+              display: 'flex', flexDirection: 'column',
+              width: 460, height: 620,
+              background: '#151515', borderRadius: 45,
+              padding: 30, border: '1px solid #222', position: 'relative'
+            }}>
+              {/* Box Placeholder for Phone */}
+              <div style={{
+                display: 'flex', width: '100%', height: 320,
+                background: 'linear-gradient(to bottom, #222, #111)', borderRadius: 30,
+                justifyContent: 'center', alignItems: 'center'
+              }}>
+                <span style={{ color: '#333', fontSize: 40, fontWeight: 'bold' }}>IMAGE</span>
               </div>
-              <span style={{ display: 'flex', color: 'white', fontSize: 32 }}>{val}</span>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', marginTop: 30 }}>
+                <span style={{ display: 'flex', color: 'white', fontSize: 44, fontWeight: 'bold' }}>{name}</span>
+                <span style={{ display: 'flex', color: '#888', fontSize: 26, marginTop: 5 }}>{spec || 'Official Global Version'}</span>
+                <div style={{ display: 'flex', alignItems: 'baseline', marginTop: 15 }}>
+                   <span style={{ color: '#3EB489', fontSize: 50, fontWeight: 'bold' }}>Ksh {price}</span>
+                   <span style={{ color: '#555', fontSize: 24, marginLeft: 15, textDecoration: 'line-through' }}>{price + 500}</span>
+                </div>
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* FOOTER: LEGAL & CONTACT */}
+        <div style={{ 
+          display: 'flex', marginTop: 'auto', 
+          background: '#1A1A1A', padding: '30px 40px', 
+          borderRadius: 30, justifyContent: 'space-between', alignItems: 'center'
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ color: 'white', fontSize: 28, fontWeight: 'bold' }}>TRIPLE K SOLUTIONS</span>
+            <span style={{ color: '#666', fontSize: 20 }}>Authenticity Guaranteed • 1 Year Warranty</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', background: '#25D366', padding: '15px 35px', borderRadius: 50 }}>
+            <span style={{ color: 'white', fontSize: 32, fontWeight: 'bold' }}>WhatsApp: {phone}</span>
+          </div>
         </div>
       </div>
     ),
