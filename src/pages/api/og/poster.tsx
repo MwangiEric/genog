@@ -6,7 +6,7 @@ const CDN = 'https://ik.imagekit.io/ericmwangi';   // 1. no trailing space
 
 // 3. preload Poppins bold
 const poppinsBold = fetch(
-  'https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecnFHGPc.woff2'
+  'https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Bold.ttf'
 ).then((res) => res.arrayBuffer());
 
 export default async function handler(req: Request) {
