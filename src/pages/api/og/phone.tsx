@@ -1,34 +1,72 @@
 import { ImageResponse } from '@vercel/og';
 
-export const config = { runtime: 'edge' };
+export const config = {
+  runtime: 'edge',
+};
 
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url);
+
   const device = searchParams.get('device') || 'PREMIUM DEVICE';
   const price = searchParams.get('price') || '0';
-  const image = searchParams.get('image');
+  const imageUrl = searchParams.get('image');
+
+  // Inline SVG for Location Pin (Gold)
+  const PinIcon = (
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C5A059" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+      <circle cx="12" cy="10" r="3"></circle>
+    </svg>
+  );
+
+  // Inline SVG for Web/Globe (Gray)
+  const WebIcon = (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
+  );
 
   return new ImageResponse(
     (
-      <div style={{
-        height: '100%', width: '100%',
-        display: 'flex', flexDirection: 'column',
-        backgroundColor: '#050505',
-        color: 'white', fontFamily: 'sans-serif',
-        position: 'relative', overflow: 'hidden'
-      }}>
-        {/* LUXURY BACKGROUND ACCENTS (Maroon & Gold) */}
-        <div style={{ position: 'absolute', top: -150, left: -150, width: 600, height: 600, background: 'radial-gradient(circle, rgba(128, 0, 0, 0.15) 0%, transparent 70%)', borderRadius: '50%' }} />
-        <div style={{ position: 'absolute', bottom: 200, right: -100, width: 500, height: 500, background: 'radial-gradient(circle, rgba(197, 160, 89, 0.1) 0%, transparent 70%)', borderRadius: '50%' }} />
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: '#050505',
+          color: 'white',
+          fontFamily: 'sans-serif',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* LUXURY BACKGROUND ACCENTS */}
+        <div style={{ position: 'absolute', top: -150, left: -150, width: 700, height: 700, background: 'radial-gradient(circle, rgba(128, 0, 0, 0.15) 0%, transparent 70%)', borderRadius: '50%' }} />
+        <div style={{ position: 'absolute', bottom: 300, right: -200, width: 600, height: 600, background: 'radial-gradient(circle, rgba(197, 160, 89, 0.1) 0%, transparent 70%)', borderRadius: '50%' }} />
 
         {/* 1. HEADER LOGO */}
         <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: 80 }}>
-          <img src="https://ik.imagekit.io/ericmwangi/tklogo.png" width={380} height={100} style={{ objectFit: 'contain' }} />
+          <img 
+            src="https://ik.imagekit.io/ericmwangi/tklogo.png" 
+            width={420} 
+            height={120} 
+            style={{ objectFit: 'contain' }} 
+          />
         </div>
 
         {/* 2. DEVICE TITLE */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 60 }}>
-          <span style={{ fontSize: 110, fontWeight: 900, textAlign: 'center', textTransform: 'uppercase', letterSpacing: -3, lineHeight: 0.9 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 40, padding: '0 60px' }}>
+          <span style={{ 
+            fontSize: 115, 
+            fontWeight: 900, 
+            textAlign: 'center', 
+            textTransform: 'uppercase', 
+            letterSpacing: -5, 
+            lineHeight: 0.85,
+          }}>
             {device}
           </span>
         </div>
@@ -36,53 +74,90 @@ export default async function handler(req: Request) {
         {/* 3. HERO PRODUCT AREA */}
         <div style={{ display: 'flex', flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
           {/* Mint Glow behind phone */}
-          <div style={{ position: 'absolute', width: 800, height: 800, background: 'radial-gradient(circle, rgba(62, 180, 137, 0.08) 0%, transparent 70%)', borderRadius: '50%' }} />
-          {image && <img src={image} style={{ width: 950, height: 950, objectFit: 'contain' }} />}
+          <div style={{ 
+            position: 'absolute', 
+            width: 900, height: 900, 
+            background: 'radial-gradient(circle, rgba(62, 180, 137, 0.1) 0%, transparent 70%)', 
+            borderRadius: '50%' 
+          }} />
+          
+          {imageUrl && (
+            <img 
+              src={imageUrl} 
+              style={{ width: 950, height: 950, objectFit: 'contain', zIndex: 10 }} 
+            />
+          )}
         </div>
 
-        {/* 4. PRICE BADGE (Mint & Gold) */}
+        {/* 4. PRICE BADGE */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 60 }}>
           <div style={{ 
-            display: 'flex', background: '#3EB489', padding: '20px 100px', borderRadius: 50, 
-            border: '4px solid #C5A059', boxShadow: '0 20px 40px rgba(62, 180, 137, 0.3)' 
+            display: 'flex', 
+            background: '#3EB489', 
+            padding: '25px 120px', 
+            borderRadius: 100, 
+            border: '5px solid #C5A059',
+            boxShadow: '0 30px 60px rgba(0,0,0,0.8)' 
           }}>
-            <span style={{ fontSize: 80, fontWeight: 900, color: '#000' }}>KES {price}</span>
+            <span style={{ fontSize: 90, fontWeight: 900, color: '#000', letterSpacing: -2 }}>
+                KSH {price}
+            </span>
           </div>
         </div>
 
-        {/* 5. PRO FOOTER SECTION */}
+        {/* 5. PROFESSIONAL INFO FOOTER */}
         <div style={{ 
-          display: 'flex', flexDirection: 'column', background: 'rgba(17,17,17,0.9)', 
-          margin: '0 50px 60px 50px', padding: '40px', borderRadius: 40, border: '1px solid #333' 
+          display: 'flex', 
+          flexDirection: 'column', 
+          background: 'rgba(18,18,18,0.95)', 
+          margin: '0 60px 40px 60px', 
+          padding: '45px', 
+          borderRadius: 50, 
+          border: '1px solid #252525',
         }}>
-          {/* Contact Row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25 }}>
+          {/* Row 1: WhatsApp & Location */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 35 }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width={45} height={45} style={{ marginRight: 15, filter: 'invert(1)' }} />
-              <span style={{ fontSize: 38, fontWeight: 800 }}>0715 130013</span>
+              <img src="https://ik.imagekit.io/ericmwangi/whatsapp.png?updatedAt=1765797099945" width={60} height={60} style={{ marginRight: 20 }} />
+              <span style={{ fontSize: 48, fontWeight: 900, color: 'white' }}>0715 130013</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <img src="https://cdn-icons-png.flaticon.com/512/484/484167.png" width={45} height={45} style={{ marginRight: 15, filter: 'invert(1)' }} />
-              <span style={{ fontSize: 24, fontWeight: 700, color: '#C5A059' }}>CBD, OPPOSITE MOI AVENUE</span>
+              <div style={{ marginRight: 15 }}>{PinIcon}</div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: 24, fontWeight: 800, color: '#C5A059', letterSpacing: 1 }}>CBD, NAIROBI</span>
+                <span style={{ fontSize: 18, fontWeight: 600, color: '#666' }}>OPP. MOI AVENUE</span>
+              </div>
             </div>
           </div>
 
-          {/* Web Row */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', borderTop: '1px solid #222', paddingTop: 20 }}>
-            <img src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png" width={30} height={30} style={{ marginRight: 12, opacity: 0.7, filter: 'invert(1)' }} />
-            <span style={{ fontSize: 28, fontWeight: 600, color: '#888', letterSpacing: 2 }}>www.tripplek.co.ke</span>
+          {/* Row 2: Website */}
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', borderTop: '1px solid #222', paddingTop: 30 }}>
+            <div style={{ marginRight: 15 }}>{WebIcon}</div>
+            <span style={{ fontSize: 32, fontWeight: 700, color: '#777', letterSpacing: 4 }}>
+                WWW.TRIPPLEK.CO.KE
+            </span>
           </div>
         </div>
 
-        {/* SHOP NOW MAROON BAR */}
+        {/* 6. MAROON CTA BAR */}
         <div style={{ 
-          display: 'flex', background: '#800000', width: '100%', height: 120, 
-          justifyContent: 'center', alignItems: 'center', borderTop: '2px solid #C5A059' 
+          display: 'flex', 
+          background: '#800000', 
+          width: '100%', 
+          height: 140, 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          borderTop: '4px solid #C5A059' 
         }}>
-          <span style={{ fontSize: 40, fontWeight: 900, letterSpacing: 5 }}>SHOP NOW ❯</span>
+          <span style={{ fontSize: 48, fontWeight: 900, letterSpacing: 10, color: '#C5A059' }}>
+            SHOP NOW ❯
+          </span>
         </div>
       </div>
     ),
-    { width: 1080, height: 1920 }
+    {
+      width: 1080,
+      height: 1920,
+    }
   );
 }
