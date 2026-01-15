@@ -2,72 +2,121 @@ import { ImageResponse } from '@vercel/og';
 
 export const config = { runtime: 'edge' };
 
-// Primary and Secondary CDN URLs
-const FONT_URL_1 = 'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFufMZhrib2Bg-4.ttf';
-const FONT_URL_2 = 'https://cdn.jsdelivr.net/gh/googlefonts/inter@master/docs/font-files/Inter-Bold.ttf';
+export default function handler(req: Request) {
+  const { searchParams } = new URL(req.url);
 
-export default async function handler(req: Request) {
-  try {
-    const { searchParams } = new URL(req.url);
+  // --- data extraction ---
+  const device = searchParams.get('device')?.toUpperCase() || 'PREMIUM DEVICE';
+  const price  = searchParams.get('price')  || 'Contact for Price';
+  const imageUrl = searchParams.get('image');
+  const glowHex = /^[0-9A-F]{6}$/i.test(searchParams.get('glow') || '')
+                ? searchParams.get('glow')
+                : 'C5A059';
 
-    // ✅ Sequential Loading with Failover
-    let fontBuffer;
-    try {
-      const res = await fetch(FONT_URL_1);
-      fontBuffer = await res.arrayBuffer();
-      
-      // Critical Check: Detect the <htm error signature
-      const check = new Uint8Array(fontBuffer.slice(0, 4));
-      if (String.fromCharCode(...check) === '<htm') throw new Error('CDN_ERROR');
-    } catch (e) {
-      // ✅ Fallback to Secondary CDN if Primary fails
-      const res = await fetch(FONT_URL_2);
-      fontBuffer = await res.arrayBuffer();
-    }
+  // technical specs
+  const ram = searchParams.get('ram') || '8GB';
+  const rom = searchParams.get('rom') || '128GB';
+  const bat = searchParams.get('bat') || '5000mAh';
+  const scr = searchParams.get('scr') || '6.5"';
 
-    // Design params
-    const device = searchParams.get('device') || 'DEVICE';
-    const price = searchParams.get('price') || '0';
-    const imageUrl = searchParams.get('image');
-    const glow = searchParams.get('glow') || 'C5A059';
+  // --- inline svg icons (system-font safe) ---
+  const IconRAM = (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2.5">
+      <rect x="2" y="5" width="20" height="14" rx="2"/>
+      <line x1="6" y1="5" x2="6" y2="9"/>
+      <line x1="14" y1="5" x2="14" y2="9"/>
+    </svg>
+  );
+  const IconROM = (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2.5">
+      <path d="M12 2v10m0 0l-3-3m3 3l3-3"/>
+      <path d="M2 17l.6-3a2 2 0 0 1 2-1.6h14.8a2 2 0 0 1 2 1.6l.6 3a2 2 0 0 1-2 2.4H4a2 2 0 0 1-2-2.4z"/>
+    </svg>
+  );
+  const IconBAT = (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2.5">
+      <rect x="2" y="7" width="16" height="10" rx="2"/>
+      <line x1="22" y1="11" x2="22" y2="13"/>
+    </svg>
+  );
+  const IconSCR = (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2.5">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <path d="M7 12h10M12 7v10"/>
+    </svg>
+  );
 
-    return new ImageResponse(
-      (
-        <div style={{ 
-          height: '100%', width: '100%', display: 'flex', flexDirection: 'column', 
-          backgroundColor: '#050505', color: 'white', fontFamily: 'Inter' 
-        }}>
-          {/* Your Triple K Layout Logic */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 70 }}>
-              <span style={{ fontSize: 60, fontWeight: 900, color: '#C5A059', letterSpacing: 10 }}>TRIPLE K</span>
-          </div>
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          backgroundColor: '#050505',
+          color: 'white',
+          fontFamily: 'sans-serif', // <-- system font only
+          padding: '60px 0 40px 0',
+        }}
+      >
+        {/* TOP BRANDING */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 30 }}>
+          <span style={{ fontSize: 55, fontWeight: 900, color: '#C5A059', letterSpacing: 10 }}>TRIPLE K</span>
+        </div>
 
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-             <div style={{ position: 'absolute', width: 850, height: 850, background: `radial-gradient(circle, #${glow}44 0%, transparent 70%)`, borderRadius: '50%' }} />
-             {imageUrl && <img src={imageUrl} style={{ width: 950, height: 950, objectFit: 'contain', zIndex: 10 }} />}
-          </div>
+        {/* DEVICE TITLE */}
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '0 60px', marginBottom: 20 }}>
+          <span style={{ fontSize: device.length > 20 ? 80 : 105, fontWeight: 900, textAlign: 'center', textTransform: 'uppercase', letterSpacing: -4, lineHeight: 0.9 }}>
+            {device}
+          </span>
+        </div>
 
-          <div style={{ display: 'flex', background: '#3EB489', padding: '20px', borderRadius: 100, border: '5px solid #C5A059', alignSelf: 'center', marginBottom: 50 }}>
-            <span style={{ fontSize: 80, fontWeight: 900, color: '#000' }}>KSH {price}</span>
+        {/* HERO IMAGE + GLOW */}
+        <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+          <div style={{ position: 'absolute', width: 850, height: 850, background: `radial-gradient(circle, #${glowHex}44 0%, transparent 70%)`, borderRadius: '50%' }} />
+          {imageUrl ? (
+            <img src={imageUrl} style={{ width: 950, height: 950, objectFit: 'contain', zIndex: 10 }} />
+          ) : (
+            <div style={{ color: '#333', fontSize: 40, zIndex: 10 }}>[ Image Pending ]</div>
+          )}
+        </div>
+
+        {/* SPECS ROW */}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '35px 0', gap: 40 }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>{IconRAM}<span style={{ marginLeft: 10, fontSize: 24, fontWeight: 700 }}>{ram.replace(/\s?RAM/i, '')}</span></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>{IconROM}<span style={{ marginLeft: 10, fontSize: 24, fontWeight: 700 }}>{rom.replace(/\s?storage/i, '')}</span></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>{IconBAT}<span style={{ marginLeft: 10, fontSize: 24, fontWeight: 700 }}>{bat}</span></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>{IconSCR}<span style={{ marginLeft: 10, fontSize: 24, fontWeight: 700 }}>{scr}</span></div>
+        </div>
+
+        {/* PRICE TAG */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+          <div style={{ background: '#3EB489', padding: '20px 110px', borderRadius: 100, border: '5px solid #C5A059', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+            <span style={{ fontSize: 85, fontWeight: 900, color: '#000' }}>KSH {price}</span>
           </div>
         </div>
-      ),
-      {
-        width: 1080,
-        height: 1920,
-        fonts: [
-          {
-            name: 'Inter',
-            data: fontBuffer,
-            weight: 900,
-            style: 'normal',
-          },
-        ],
-      }
-    );
-  } catch (err: any) {
-    // Final Safety Net: Returns a 200 status with text so the user knows what happened
-    console.error(err);
-    return new Response(`Render Error: ${err.message}`, { status: 200 });
-  }
+
+        {/* FOOTER INFO */}
+        <div style={{ display: 'flex', width: '100%', background: '#111', margin: '0 60px', padding: '40px', borderRadius: 45, border: '1px solid #222', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <span style={{ fontSize: 45 }}>📞</span>
+            <span style={{ fontSize: 45, fontWeight: 900, marginLeft: 15 }}>0715 130013</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+            <span style={{ fontSize: 24, fontWeight: 800, color: '#C5A059' }}>CBD, NAIROBI</span>
+            <span style={{ fontSize: 16, color: '#777' }}>OPPOSITE MOI AVENUE</span>
+          </div>
+        </div>
+
+        {/* BOTTOM CTA BAR */}
+        <div style={{ display: 'flex', width: '100%', height: 130, background: '#800000', justifyContent: 'center', alignItems: 'center', borderTop: '4px solid #C5A059', marginTop: 40 }}>
+          <span style={{ fontSize: 45, fontWeight: 900, letterSpacing: 10, color: '#C5A059' }}>SHOP NOW ❯</span>
+        </div>
+      </div>
+    ),
+    { width: 1080, height: 1920 }
+    // no fonts array – system font only
+  );
 }
