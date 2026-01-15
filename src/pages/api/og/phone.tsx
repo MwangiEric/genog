@@ -12,9 +12,7 @@ const LogoSVG = (
 
 /* ----------  product fallback (vector)  ---------- */
 const DeviceFallback = (
-  <div style={{ width: 950, height: 950, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,#222 0%, #111 100%)', border: '2px dashed #333', borderRadius: 24, fontSize: 40, color: '#555' }}>
-    DEVICE IMAGE
-  </div>
+  <div style={{ width: 950, height: 950, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,#222 0%, #111 100%)', border: '2px dashed #333', borderRadius: 24, fontSize: 40, color: '#555' }}>DEVICE IMAGE</div>
 );
 
 export default function handler(req: Request) {
