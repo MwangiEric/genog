@@ -2,12 +2,38 @@ import { ImageResponse } from '@vercel/og';
 
 export const config = { runtime: 'edge' };
 
+/* ----------  spec icons  ---------- */
+const IconRAM = (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2.5">
+    <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="6" y1="5" x2="6" y2="9"/><line x1="14" y1="5" x2="14" y2="9"/>
+  </svg>
+);
+const IconROM = (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2.5">
+    <path d="M12 2v10m0 0l-3-3m3 3l3-3"/><path d="M2 17l.6-3a2 2 0 0 1 2-1.6h14.8a2 2 0 0 1 2 1.6l.6 3a2 2 0 0 1-2 2.4H4a2 2 0 0 1-2-2.4z"/>
+  </svg>
+);
+const IconBAT = (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2.5">
+    <rect x="2" y="7" width="16" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/>
+  </svg>
+);
+const IconSCR = (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2.5">
+    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 12h10M12 7v10"/>
+  </svg>
+);
+
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url);
 
-  const device   = searchParams.get('device') || 'PREMIUM DEVICE';
-  const price    = searchParams.get('price')  || '0';
+  const device   = searchParams.get('device')?.toUpperCase() || 'PREMIUM DEVICE';
+  const price    = searchParams.get('price')  || 'Contact for Price';
   const imageUrl = searchParams.get('image');
+  const ram      = searchParams.get('ram') || '8GB';
+  const rom      = searchParams.get('rom') || '128GB';
+  const bat      = searchParams.get('bat') || '5000mAh';
+  const scr      = searchParams.get('scr') || '6.5"';
   const glowHex  = /^[0-9A-F]{6}$/i.test(searchParams.get('glow') || '')
                  ? searchParams.get('glow')
                  : 'C5A059';
@@ -26,17 +52,25 @@ export default async function handler(req: Request) {
           <img src="https://ik.imagekit.io/ericmwangi/tklogo.png" width={350} height={100} style={{ objectFit: 'contain' }} />
         </div>
 
-        {/* PRODUCT TITLE */}
+        {/* DEVICE NAME */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 20 }}>
-          <span style={{ fontSize: 110, fontWeight: 900, textAlign: 'center', textTransform: 'uppercase', letterSpacing: -4, lineHeight: 1 }}>
+          <span style={{ fontSize: device.length > 20 ? 80 : 105, fontWeight: 900, textAlign: 'center', textTransform: 'uppercase', letterSpacing: -4, lineHeight: 1 }}>
             {device}
           </span>
         </div>
 
         {/* HERO IMAGE – glow + optional bitmap */}
         <div style={{ display: 'flex', flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
-          <div style={{ position: 'absolute', width: 900, height: 900, background: `radial-gradient(circle, #${glowHex}22 0%, transparent 70%)`, borderRadius: '50%' }} />
+          <div style={{ position: 'absolute', width: 900, height: 900, background: `radial-gradient(circle, #${glowHex}44 0%, transparent 70%)`, borderRadius: '50%' }} />
           {imageUrl && <img src={imageUrl} style={{ width: 950, height: 950, objectFit: 'contain', zIndex: 10 }} />}
+        </div>
+
+        {/* SPECS ROW – icons + labels */}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 35, gap: 40 }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>{IconRAM}<span style={{ marginLeft: 10, fontSize: 24, fontWeight: 700 }}>{ram}</span></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>{IconROM}<span style={{ marginLeft: 10, fontSize: 24, fontWeight: 700 }}>{rom}</span></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>{IconBAT}<span style={{ marginLeft: 10, fontSize: 24, fontWeight: 700 }}>{bat}</span></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>{IconSCR}<span style={{ marginLeft: 10, fontSize: 24, fontWeight: 700 }}>{scr}</span></div>
         </div>
 
         {/* PRICE & CTA */}
