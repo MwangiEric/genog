@@ -2,14 +2,6 @@ import { ImageResponse } from '@vercel/og';
 
 export const config = { runtime: 'edge' };
 
-/* ----------  inline triple-k logo  ---------- */
-const LogoSVG = (
-  <svg width="350" height="100" viewBox="0 0 350 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="350" height="100" rx="12" fill="#C5A059"/>
-    <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fill="#050505" fontSize="45" fontWeight="900" fontFamily="sans-serif">TRIPLE K</text>
-  </svg>
-);
-
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url);
 
@@ -29,9 +21,9 @@ export default async function handler(req: Request) {
         fontFamily: 'sans-serif', padding: '80px',
         position: 'relative',
       }}>
-        {/* TOP BRANDING – inline SVG */}
+        {/* TOP BRANDING – external PNG URL */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
-          {LogoSVG}
+          <img src="https://ik.imagekit.io/ericmwangi/tklogo.png" width={350} height={100} style={{ objectFit: 'contain' }} />
         </div>
 
         {/* PRODUCT TITLE */}
