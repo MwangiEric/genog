@@ -2,71 +2,54 @@ import { ImageResponse } from '@vercel/og';
 
 export const config = { runtime: 'edge' };
 
-// PRIMARY FONT: Inter Bold from Google Static
-const FONT_PRIMARY = 'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFufMZhrib2Bg-4.ttf';
-// SECONDARY FONT: Roboto from a different CDN (Cloudflare/jsDelivr)
-const FONT_SECONDARY = 'https://cdn.jsdelivr.net/fontsource/fonts/roboto@latest/latin-700-normal.ttf';
-
-// Pre-fetching both to ensure they are available
-const fontBold = fetch(new URL(FONT_PRIMARY, import.meta.url)).then(res => res.arrayBuffer());
-const fontFallback = fetch(new URL(FONT_SECONDARY, import.meta.url)).then(res => res.arrayBuffer());
+// Primary and Secondary CDN URLs
+const FONT_URL_1 = 'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFufMZhrib2Bg-4.ttf';
+const FONT_URL_2 = 'https://cdn.jsdelivr.net/gh/googlefonts/inter@master/docs/font-files/Inter-Bold.ttf';
 
 export default async function handler(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
 
-    // Load fonts in parallel for speed
-    const [primaryData, secondaryData] = await Promise.all([fontBold, fontFallback]);
+    // ✅ Sequential Loading with Failover
+    let fontBuffer;
+    try {
+      const res = await fetch(FONT_URL_1);
+      fontBuffer = await res.arrayBuffer();
+      
+      // Critical Check: Detect the <htm error signature
+      const check = new Uint8Array(fontBuffer.slice(0, 4));
+      if (String.fromCharCode(...check) === '<htm') throw new Error('CDN_ERROR');
+    } catch (e) {
+      // ✅ Fallback to Secondary CDN if Primary fails
+      const res = await fetch(FONT_URL_2);
+      fontBuffer = await res.arrayBuffer();
+    }
 
-    // Check if what we got is actually a font binary (OpenType starts with 'OTTO' or '\0\1\0\0')
-    const isValidFont = (buf: ArrayBuffer) => {
-        const view = new Uint8Array(buf.slice(0, 4));
-        const sig = String.fromCharCode(...view);
-        return sig !== '<htm'; // If it starts with '<htm', it's a 404 error page
-    };
-
-    // Determine the best available font
-    const activeFont = isValidFont(primaryData) ? primaryData : secondaryData;
-
-    const device = searchParams.get('device')?.toUpperCase() || 'PREMIUM DEVICE';
+    // Design params
+    const device = searchParams.get('device') || 'DEVICE';
     const price = searchParams.get('price') || '0';
     const imageUrl = searchParams.get('image');
     const glow = searchParams.get('glow') || 'C5A059';
-    
-    // Technical Specs
-    const ram = searchParams.get('ram') || '12GB';
-    const rom = searchParams.get('rom') || '256GB';
-    const bat = searchParams.get('bat') || '5000mAh';
-    const scr = searchParams.get('scr') || '6.7"';
 
     return new ImageResponse(
       (
         <div style={{ 
           height: '100%', width: '100%', display: 'flex', flexDirection: 'column', 
-          backgroundColor: '#050505', color: 'white', fontFamily: 'CustomFont' 
+          backgroundColor: '#050505', color: 'white', fontFamily: 'Inter' 
         }}>
-          {/* ... DESIGN CODE REMAINS THE SAME ... */}
+          {/* Your Triple K Layout Logic */}
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 70 }}>
               <span style={{ fontSize: 60, fontWeight: 900, color: '#C5A059', letterSpacing: 10 }}>TRIPLE K</span>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30, padding: '0 60px' }}>
-            <span style={{ fontSize: device.length > 20 ? 80 : 105, fontWeight: 900, textAlign: 'center', textTransform: 'uppercase', letterSpacing: -4, lineHeight: 0.9 }}>
-              {device}
-            </span>
+          <div style={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+             <div style={{ position: 'absolute', width: 850, height: 850, background: `radial-gradient(circle, #${glow}44 0%, transparent 70%)`, borderRadius: '50%' }} />
+             {imageUrl && <img src={imageUrl} style={{ width: 950, height: 950, objectFit: 'contain', zIndex: 10 }} />}
           </div>
 
-          <div style={{ display: 'flex', flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
-            <div style={{ position: 'absolute', width: 850, height: 850, background: `radial-gradient(circle, #${glow}44 0%, transparent 70%)`, borderRadius: '50%' }} />
-            {imageUrl && <img src={imageUrl} style={{ width: 950, height: 950, objectFit: 'contain', zIndex: 10 }} />}
+          <div style={{ display: 'flex', background: '#3EB489', padding: '20px', borderRadius: 100, border: '5px solid #C5A059', alignSelf: 'center', marginBottom: 50 }}>
+            <span style={{ fontSize: 80, fontWeight: 900, color: '#000' }}>KSH {price}</span>
           </div>
-
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 50 }}>
-            <div style={{ background: '#3EB489', padding: '20px 110px', borderRadius: 100, border: '5px solid #C5A059' }}>
-              <span style={{ fontSize: 85, fontWeight: 900, color: '#000' }}>KSH {price}</span>
-            </div>
-          </div>
-          {/* ... END OF DESIGN CODE ... */}
         </div>
       ),
       {
@@ -74,17 +57,17 @@ export default async function handler(req: Request) {
         height: 1920,
         fonts: [
           {
-            name: 'CustomFont',
-            data: activeFont, // Dynamically selected valid font binary
-            style: 'normal',
+            name: 'Inter',
+            data: fontBuffer,
             weight: 900,
+            style: 'normal',
           },
         ],
       }
     );
-  } catch (e: any) {
-    // If EVERYTHING fails, return a basic system-font image response so the UI doesn't break
-    console.error("Critical Render Error:", e.message);
-    return new Response(`Triple K Render Error: Please refresh image.`, { status: 200 });
+  } catch (err: any) {
+    // Final Safety Net: Returns a 200 status with text so the user knows what happened
+    console.error(err);
+    return new Response(`Render Error: ${err.message}`, { status: 200 });
   }
 }
