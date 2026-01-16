@@ -4,8 +4,8 @@ export const config = { runtime: 'edge' };
 
 /* ----------  social PNG icons (external) ---------- */
 const WhatsApp = 'https://ik.imagekit.io/ericmwangi/whatsapp.png';
-const Web      = 'https://cdn-icons-png.flaticon.com/512/1006/1006771.png';
-const Location = 'https://cdn-icons-png.flaticon.com/512/684/684908.png';
+const Web = 'https://ik.imagekit.io/ericmwangi/whatsapp.png';
+const Location = 'https://ik.imagekit.io/ericmwangi/whatsapp.png';
 
 /* ----------  spec icons (inline vector) ---------- */
 const IconRAM = (
