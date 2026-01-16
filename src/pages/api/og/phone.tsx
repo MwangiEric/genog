@@ -129,7 +129,7 @@ export default async function handler(req: Request) {
 
           {/* Row 2: Website CTA */}
           <div style={{ display: 'flex', justifyContent: 'center', borderTop: '1px solid #222', paddingTop: 25 }}>
-            <img src="https://ik.imagekit.io/ericmwangi/web.png" width={32} height={32} />
+            <img src="https://ik.imagekit.io/ericmwangi/call.png" width={32} height={32} />
             <span style={{ fontSize: 28, fontWeight: 800, color: '#C5A059', marginLeft: 15, letterSpacing: 2 }}>
               WWW.TRIPPLEK.CO.KE
             </span>
