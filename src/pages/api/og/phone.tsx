@@ -17,7 +17,6 @@ export default async function handler(req: Request) {
                  ? searchParams.get('glow')
                  : 'C5A059';
 
-  // Responsive font size for device title
   const fontSize = device.length > 15 ? 80 : 110;
 
   return new ImageResponse(
@@ -60,7 +59,6 @@ export default async function handler(req: Request) {
 
         {/* 3. HERO IMAGE AREA */}
         <div style={{ display: 'flex', flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
-          {/* Background Glow */}
           <div style={{ 
             position: 'absolute', 
             width: 800, 
@@ -69,81 +67,76 @@ export default async function handler(req: Request) {
             borderRadius: '50%' 
           }} />
           
-          {imageUrl ? (
+          {imageUrl && (
             <img src={imageUrl} style={{ width: 900, height: 900, objectFit: 'contain', zIndex: 10 }} />
-          ) : (
-            <div style={{ fontSize: 40, color: '#333' }}>[ NO IMAGE PROVIDED ]</div>
           )}
         </div>
 
-        {/* 4. SPECS SECTION (Text-Based for Stability) */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 50, marginBottom: 40 }}>
+        {/* 4. SPECS SECTION */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 50, marginBottom: 50 }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <span style={{ color: '#C5A059', fontSize: 20, fontWeight: 800, marginBottom: 5 }}>RAM</span>
-            <span style={{ fontSize: 34, fontWeight: 900 }}>{ram}</span>
+            <span style={{ color: '#C5A059', fontSize: 22, fontWeight: 800 }}>RAM</span>
+            <span style={{ fontSize: 36, fontWeight: 900 }}>{ram}</span>
           </div>
           <div style={{ width: 2, height: 50, background: '#222' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <span style={{ color: '#C5A059', fontSize: 20, fontWeight: 800, marginBottom: 5 }}>STORAGE</span>
-            <span style={{ fontSize: 34, fontWeight: 900 }}>{rom}</span>
+            <span style={{ color: '#C5A059', fontSize: 22, fontWeight: 800 }}>ROM</span>
+            <span style={{ fontSize: 36, fontWeight: 900 }}>{rom}</span>
           </div>
           <div style={{ width: 2, height: 50, background: '#222' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <span style={{ color: '#C5A059', fontSize: 20, fontWeight: 800, marginBottom: 5 }}>BATTERY</span>
-            <span style={{ fontSize: 34, fontWeight: 900 }}>{bat}</span>
+            <span style={{ color: '#C5A059', fontSize: 22, fontWeight: 800 }}>BATTERY</span>
+            <span style={{ fontSize: 36, fontWeight: 900 }}>{bat}</span>
           </div>
         </div>
 
-        {/* 5. PRICE & CTA */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {/* Price Tag */}
+        {/* 5. PRICE BADGE */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 50 }}>
           <div style={{ 
             display: 'flex', 
             background: '#3EB489', 
-            padding: '25px 90px', 
-            borderRadius: 30, 
-            marginBottom: 50,
-            boxShadow: '0 20px 40px rgba(62, 180, 137, 0.2)' 
+            padding: '25px 100px', 
+            borderRadius: 30,
+            boxShadow: '0 20px 40px rgba(62, 180, 137, 0.3)' 
           }}>
-            <span style={{ fontSize: 90, fontWeight: 900, color: '#000' }}>
-              KES {Number(price).toLocaleString()}
+            <span style={{ fontSize: 95, fontWeight: 900, color: '#000' }}>
+              KES {price}
             </span>
           </div>
+        </div>
 
-          {/* Contact Bar */}
-          <div style={{ 
-            display: 'flex', 
-            width: '100%', 
-            background: '#111', 
-            padding: '45px', 
-            borderRadius: 35, 
-            border: '1px solid #222', 
-            justifyContent: 'space-between', 
-            alignItems: 'center' 
-          }}>
-             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ color: '#C5A059', fontSize: 26, fontWeight: 800 }}>ORDER VIA WHATSAPP</span>
-                <span style={{ fontSize: 48, fontWeight: 900 }}>0704 554 445</span>
-             </div>
-             <div style={{ 
-               display: 'flex', 
-               background: '#C5A059', 
-               color: 'black', 
-               padding: '18px 45px', 
-               borderRadius: 18, 
-               fontWeight: 900, 
-               fontSize: 32,
-               letterSpacing: 1
-             }}>
-                BUY NOW
-             </div>
+        {/* 6. CONTACT FOOTER (New Icons & Website) */}
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          width: '100%', 
+          background: '#111', 
+          padding: '40px', 
+          borderRadius: 40, 
+          border: '1px solid #222'
+        }}>
+          {/* Row 1: WhatsApp & Call */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <img src="https://ik.imagekit.io/ericmwangi/whatsapp.png" width={45} height={45} />
+              <span style={{ fontSize: 38, fontWeight: 900, marginLeft: 15 }}>0704 554 445</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <img src="https://ik.imagekit.io/ericmwangi/call.png" width={40} height={40} />
+              <span style={{ fontSize: 38, fontWeight: 900, marginLeft: 15 }}>CALL NOW</span>
+            </div>
+          </div>
+
+          {/* Row 2: Website CTA */}
+          <div style={{ display: 'flex', justifyContent: 'center', borderTop: '1px solid #222', paddingTop: 25 }}>
+            <img src="https://ik.imagekit.io/ericmwangi/web.png" width={32} height={32} />
+            <span style={{ fontSize: 28, fontWeight: 800, color: '#C5A059', marginLeft: 15, letterSpacing: 2 }}>
+              WWW.TRIPPLEK.CO.KE
+            </span>
           </div>
         </div>
       </div>
     ),
-    { 
-      width: 1080, 
-      height: 1920 
-    }
+    { width: 1080, height: 1920 }
   );
 }
