@@ -9,11 +9,9 @@ export default async function handler(req: Request) {
   const device   = searchParams.get('device') || 'PREMIUM DEVICE';
   const price    = searchParams.get('price')  || '0';
   const imageUrl = searchParams.get('image');
-  
-  // Specs
-  const ram      = searchParams.get('ram') || '8GB';
-  const rom      = searchParams.get('rom') || '128GB';
-  const bat      = searchParams.get('bat') || '5000mAh';
+  const ram      = searchParams.get('ram')    || '8GB';
+  const rom      = searchParams.get('rom')    || '128GB';
+  const bat      = searchParams.get('bat')    || '5000mAh';
   
   const glowHex  = /^[0-9A-F]{6}$/i.test(searchParams.get('glow') || '') ? searchParams.get('glow') : 'C5A059';
 
@@ -26,7 +24,7 @@ export default async function handler(req: Request) {
         fontFamily: 'sans-serif', padding: '80px',
       }}>
         
-        {/* 1. TOP BRANDING - Image Link 1 */}
+        {/* 1. TOP BRANDING */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
           <img src="https://ik.imagekit.io/ericmwangi/tklogo.png" width={380} height={120} style={{ objectFit: 'contain' }} />
         </div>
@@ -38,27 +36,27 @@ export default async function handler(req: Request) {
           </span>
         </div>
 
-        {/* 3. HERO AREA - Image Link 2 */}
+        {/* 3. HERO AREA */}
         <div style={{ display: 'flex', flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
-          <div style={{ position: 'absolute', width: 850, height: 850, background: `radial-gradient(circle, #${glowHex}22 0%, transparent 70%)`, borderRadius: '50%' }} />
+          <div style={{ position: 'absolute', width: 850, height: 850, background: `radial-gradient(circle, #${glowHex}22 0%, transparent 70%)`, borderRadius: '50%', display: 'flex' }} />
           {imageUrl && <img src={imageUrl} style={{ width: 900, height: 900, objectFit: 'contain', zIndex: 10 }} />}
         </div>
 
-        {/* 4. SPECS SECTION - Geometric Design (No Icons) */}
+        {/* 4. SPECS SECTION */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 40, marginBottom: 50 }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <span style={{ color: '#C5A059', fontSize: 20, fontWeight: 800, letterSpacing: 1 }}>RAM</span>
             <span style={{ fontSize: 36, fontWeight: 900 }}>{ram}</span>
           </div>
           
-          <div style={{ width: 2, height: 60, background: '#222' }} /> {/* Vertical Divider */}
+          <div style={{ display: 'flex', width: 2, height: 60, background: '#222' }} />
           
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <span style={{ color: '#C5A059', fontSize: 20, fontWeight: 800, letterSpacing: 1 }}>ROM</span>
             <span style={{ fontSize: 36, fontWeight: 900 }}>{rom}</span>
           </div>
           
-          <div style={{ width: 2, height: 60, background: '#222' }} /> {/* Vertical Divider */}
+          <div style={{ display: 'flex', width: 2, height: 60, background: '#222' }} />
           
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <span style={{ color: '#C5A059', fontSize: 20, fontWeight: 800, letterSpacing: 1 }}>BATTERY</span>
@@ -68,12 +66,12 @@ export default async function handler(req: Request) {
 
         {/* 5. PRICE BADGE */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 50 }}>
-          <div style={{ background: '#3EB489', padding: '25px 100px', borderRadius: 30, boxShadow: '0 20px 50px rgba(62, 180, 137, 0.3)' }}>
+          <div style={{ display: 'flex', background: '#3EB489', padding: '25px 100px', borderRadius: 30 }}>
             <span style={{ fontSize: 95, fontWeight: 900, color: '#000' }}>KES {price}</span>
           </div>
         </div>
 
-        {/* 6. CONTACT FOOTER - High Contrast Text Layout */}
+        {/* 6. CONTACT FOOTER */}
         <div style={{ 
           display: 'flex', flexDirection: 'column', width: '100%', 
           background: '#111', padding: '40px', borderRadius: 40, border: '1px solid #222' 
