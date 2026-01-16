@@ -2,56 +2,12 @@ import { ImageResponse } from '@vercel/og';
 
 export const config = { runtime: 'edge' };
 
-/* ----------  inline svgs  ---------- */
-const Logo = (
-  <svg width="350" height="100" viewBox="0 0 350 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="350" height="100" rx="12" fill="#C5A059"/>
-    <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fill="#050505" fontSize="45" fontWeight="900" fontFamily="sans-serif">TRIPLE K</text>
-  </svg>
-);
-
-const IconRAM = (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2">
-    <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="6" y1="5" x2="6" y2="9"/><line x1="14" y1="5" x2="14" y2="9"/>
-  </svg>
-);
-const IconROM = (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2">
-    <path d="M12 2v10m0 0l-3-3m3 3l3-3"/><path d="M2 17l.6-3a2 2 0 0 1 2-1.6h14.8a2 2 0 0 1 2 1.6l.6 3a2 2 0 0 1-2 2.4H4a2 2 0 0 1-2-2.4z"/>
-  </svg>
-);
-const IconBAT = (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2">
-    <rect x="2" y="7" width="16" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/>
-  </svg>
-);
-const IconSCR = (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2">
-    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 12h10M12 7v10"/>
-  </svg>
-);
-
-const WhatsAppIcon = (
-  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2">
-    <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21zm9-11a2 2 0 0 0-2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1-.9-2-2-2z"/>
-  </svg>
-);
-const LocationIcon = (
-  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2">
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-  </svg>
-);
-
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url);
 
   const device   = searchParams.get('device')?.toUpperCase() || 'PREMIUM DEVICE';
-  const price    = searchParams.get('price')  || 'Contact for Price';
+  const price    = searchParams.get('price')  || '0';
   const imageUrl = searchParams.get('image');
-  const ram      = searchParams.get('ram') || '8GB';
-  const rom      = searchParams.get('rom') || '128GB';
-  const bat      = searchParams.get('bat') || '5000mAh';
-  const scr      = searchParams.get('scr') || '6.5"';
   const glowHex  = /^[0-9A-F]{6}$/i.test(searchParams.get('glow') || '') ? searchParams.get('glow') : 'C5A059';
 
   return new ImageResponse(
@@ -89,12 +45,24 @@ export default async function handler(req: Request) {
           </div>
         </div>
 
-        {/* 4.  SPECS – icons + labels  */}
+        {/* 4.  SPECS – hard-coded icons + dynamic text  */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 35, gap: 50 }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>{IconRAM}<span style={{ marginLeft: 10, fontSize: 26, fontWeight: 700 }}>{ram}</span></div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>{IconROM}<span style={{ marginLeft: 10, fontSize: 26, fontWeight: 700 }}>{rom}</span></div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>{IconBAT}<span style={{ marginLeft: 10, fontSize: 26, fontWeight: 700 }}>{bat}</span></div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>{IconSCR}<span style={{ marginLeft: 10, fontSize: 26, fontWeight: 700 }}>{scr}</span></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="6" y1="5" x2="6" y2="9"/><line x1="14" y1="5" x2="14" y2="9"/></svg>
+            <span style={{ marginLeft: 10, fontSize: 26, fontWeight: 700 }}>{searchParams.get('ram') || '8GB'}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2"><path d="M12 2v10m0 0l-3-3m3 3l3-3"/><path d="M2 17l.6-3a2 2 0 0 1 2-1.6h14.8a2 2 0 0 1 2 1.6l.6 3a2 2 0 0 1-2 2.4H4a2 2 0 0 1-2-2.4z"/></svg>
+            <span style={{ marginLeft: 10, fontSize: 26, fontWeight: 700 }}>{searchParams.get('rom') || '128GB'}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2"><rect x="2" y="7" width="16" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
+            <span style={{ marginLeft: 10, fontSize: 26, fontWeight: 700 }}>{searchParams.get('bat') || '5000mAh'}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 12h10M12 7v10"/></svg>
+            <span style={{ marginLeft: 10, fontSize: 26, fontWeight: 700 }}>{searchParams.get('scr') || '6.5"'}</span>
+          </div>
         </div>
 
         {/* 5.  PRICE BADGE  */}
@@ -104,14 +72,14 @@ export default async function handler(req: Request) {
           </div>
         </div>
 
-        {/* 6.  FOOTER – static icons + text  */}
+        {/* 6.  FOOTER – static icons + static text  */}
         <div style={{ display: 'flex', width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)', marginTop: 40, padding: '30px 40px', borderRadius: 30, justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-            {WhatsAppIcon}
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21zm9-11a2 2 0 0 0-2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1-.9-2-2-2z"/></svg>
             <span style={{ fontSize: 32, fontWeight: 900 }}>0704 554 445</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-            {LocationIcon}
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             <span style={{ fontSize: 24, fontWeight: 700, color: '#C5A059' }}>CBD, NAIROBI</span>
           </div>
         </div>
