@@ -9,15 +9,15 @@ export default async function handler(req: Request) {
     // Get ONLY dynamic text content
     const device = searchParams.get('device')?.toUpperCase() || 'NEW DEVICE';
     const price = searchParams.get('price') || 'PRICE ON REQUEST';
-    const imageUrl = searchParams.get('image') || 'https://ik.imagekit.io/ericmwangi/iphone.png';
+    const imageUrl = searchParams.get('image') || 'https://ik.imagekit.io/ericmwangi/phone-rectangle.png';
     
-    // Simple specs with fallbacks
+    // Simple specs
     const ram = searchParams.get('ram') || '8GB';
     const rom = searchParams.get('rom') || '256GB';
     const bat = searchParams.get('bat') || '5000mAh';
     const scr = searchParams.get('scr') || '6.7"';
     
-    // Platform detection
+    // Platform
     const platform = searchParams.get('platform') || 'whatsapp';
     const width = 1080;
     const height = platform === 'facebook' ? 1350 : 1920;
@@ -31,7 +31,7 @@ export default async function handler(req: Request) {
         <div style={{
           height: '100%',
           width: '100%',
-          display: 'flex',
+          display: 'flex', // ✅ Parent div has flex
           flexDirection: 'column',
           backgroundColor: '#050505',
           color: 'white',
@@ -39,10 +39,10 @@ export default async function handler(req: Request) {
           padding: '60px',
         }}>
           
-          {/* LOGO - HARDCODED */}
+          {/* LOGO - Single child div, no display needed */}
           <div style={{ 
             height: '85px', 
-            display: 'flex', 
+            display: 'flex', // ✅ Explicit flex even with single child
             justifyContent: 'center',
             alignItems: 'center'
           }}>
@@ -54,10 +54,10 @@ export default async function handler(req: Request) {
             />
           </div>
 
-          {/* DEVICE NAME - DYNAMIC TEXT ONLY */}
+          {/* DEVICE NAME - Two children, MUST have display: flex */}
           <div style={{ 
             height: '140px',
-            display: 'flex', 
+            display: 'flex', // ✅ Explicit flex
             flexDirection: 'column', 
             alignItems: 'center',
             justifyContent: 'center',
@@ -78,10 +78,10 @@ export default async function handler(req: Request) {
             }} />
           </div>
 
-          {/* DEVICE IMAGE - ONLY DYNAMIC PART (with fallback) */}
+          {/* DEVICE IMAGE - Two children, MUST have display: flex */}
           <div style={{ 
             height: '600px',
-            display: 'flex', 
+            display: 'flex', // ✅ Explicit flex
             justifyContent: 'center', 
             alignItems: 'center',
             position: 'relative',
@@ -104,21 +104,21 @@ export default async function handler(req: Request) {
             />
           </div>
 
-          {/* SPECS - DYNAMIC TEXT ONLY */}
+          {/* SPECS GRID - Four children, MUST have display: flex */}
           <div style={{ 
             height: '120px',
-            display: 'flex', 
+            display: 'flex', // ✅ Explicit flex
             flexDirection: 'row',
             marginBottom: '30px',
           }}>
-            {/* RAM */}
+            {/* RAM - Two children, MUST have display: flex */}
             <div style={{ 
               flex: 1,
               marginRight: '15px',
               background: '#111', 
               borderRadius: '12px',
               border: '1px solid #222',
-              display: 'flex',
+              display: 'flex', // ✅ Explicit flex
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
@@ -131,14 +131,14 @@ export default async function handler(req: Request) {
               </div>
             </div>
             
-            {/* STORAGE */}
+            {/* STORAGE - Two children, MUST have display: flex */}
             <div style={{ 
               flex: 1,
               marginRight: '15px',
               background: '#111', 
               borderRadius: '12px',
               border: '1px solid #222',
-              display: 'flex',
+              display: 'flex', // ✅ Explicit flex
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
@@ -151,14 +151,14 @@ export default async function handler(req: Request) {
               </div>
             </div>
             
-            {/* BATTERY */}
+            {/* BATTERY - Two children, MUST have display: flex */}
             <div style={{ 
               flex: 1,
               marginRight: '15px',
               background: '#111', 
               borderRadius: '12px',
               border: '1px solid #222',
-              display: 'flex',
+              display: 'flex', // ✅ Explicit flex
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
@@ -171,13 +171,13 @@ export default async function handler(req: Request) {
               </div>
             </div>
             
-            {/* SCREEN */}
+            {/* SCREEN - Two children, MUST have display: flex */}
             <div style={{ 
               flex: 1,
               background: '#111', 
               borderRadius: '12px',
               border: '1px solid #222',
-              display: 'flex',
+              display: 'flex', // ✅ Explicit flex
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
@@ -191,10 +191,10 @@ export default async function handler(req: Request) {
             </div>
           </div>
 
-          {/* PRICE - DYNAMIC TEXT ONLY */}
+          {/* PRICE - Single child, but still give it display: flex */}
           <div style={{ 
             height: '120px',
-            display: 'flex', 
+            display: 'flex', // ✅ Explicit flex (good practice)
             justifyContent: 'center', 
             alignItems: 'center',
           }}>
@@ -209,20 +209,20 @@ export default async function handler(req: Request) {
             </div>
           </div>
 
-          {/* FOOTER - HARDCODED IMAGES & TEXT */}
+          {/* FOOTER - Two children, MUST have display: flex */}
           <div style={{ 
             height: '120px',
-            display: 'flex', 
+            display: 'flex', // ✅ Explicit flex
             flexDirection: 'row',
             background: '#0a0a0a', 
             padding: '25px 30px', 
             borderRadius: '20px',
             border: '1px solid #1a1a1a',
           }}>
-            {/* Left: WhatsApp */}
+            {/* WhatsApp Section - Two children, MUST have display: flex */}
             <div style={{ 
               flex: 1,
-              display: 'flex', 
+              display: 'flex', // ✅ Explicit flex
               alignItems: 'center',
             }}>
               <img 
@@ -231,16 +231,16 @@ export default async function handler(req: Request) {
                 height={45} 
                 style={{ marginRight: '12px' }} 
               />
-              <div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}> {/* ✅ Nested div with 2 children */}
                 <div style={{ color: '#C5A059', fontSize: 16, fontWeight: 700 }}>ORDER NOW</div>
                 <div style={{ fontSize: 32, fontWeight: 800 }}>0704 554 445</div>
               </div>
             </div>
 
-            {/* Right: Location */}
+            {/* Location Section - Two children, MUST have display: flex */}
             <div style={{ 
               flex: 1,
-              display: 'flex', 
+              display: 'flex', // ✅ Explicit flex
               alignItems: 'center',
               justifyContent: 'flex-end',
             }}>
@@ -250,17 +250,21 @@ export default async function handler(req: Request) {
                 height={35} 
                 style={{ marginRight: '12px' }} 
               />
-              <div style={{ textAlign: 'right' }}>
+              <div style={{ 
+                display: 'flex', // ✅ Explicit flex
+                flexDirection: 'column',
+                alignItems: 'flex-end' 
+              }}>
                 <div style={{ color: '#C5A059', fontSize: 16, fontWeight: 700 }}>LOCATION</div>
                 <div style={{ fontSize: 20, fontWeight: 800 }}>CBD, NAIROBI</div>
               </div>
             </div>
           </div>
 
-          {/* WEBSITE - HARDCODED */}
+          {/* WEBSITE - Single child, but still give it display: flex */}
           <div style={{ 
             height: '60px',
-            display: 'flex', 
+            display: 'flex', // ✅ Explicit flex
             justifyContent: 'center', 
             alignItems: 'center',
           }}>
@@ -280,7 +284,7 @@ export default async function handler(req: Request) {
       }
     );
   } catch (error) {
-    // Return a simple error image if anything goes wrong
+    // Simple error response
     return new ImageResponse(
       (
         <div style={{
@@ -293,7 +297,11 @@ export default async function handler(req: Request) {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center' 
+          }}>
             <img 
               src="https://ik.imagekit.io/ericmwangi/tklogo.png" 
               width={300} 
