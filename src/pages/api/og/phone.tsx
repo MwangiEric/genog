@@ -6,8 +6,8 @@ export const config = { runtime: 'edge' };
 const BRAND = {
   logo: 'https://ik.imagekit.io/ericmwangi/tklogo.png',
   whatsappIcon: 'https://ik.imagekit.io/ericmwangi/whatsapp.png',
-  locationIcon: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-  defaultPhone: 'https://ik.imagekit.io/ericmwangi/default-phone.png'
+  locationIcon: 'https://ik.imagekit.io/ericmwangi/location.png',
+  defaultPhone: 'https://ik.imagekit.io/ericmwangi/iphone.png'
 };
 
 export default async function handler(req: Request) {
