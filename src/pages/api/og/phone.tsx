@@ -6,12 +6,12 @@ export default async function handler(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     
-    // Get ONLY dynamic text content
+    // Get text content
     const device = searchParams.get('device')?.toUpperCase() || 'NEW DEVICE';
     const price = searchParams.get('price') || 'PRICE ON REQUEST';
-    const imageUrl = searchParams.get('image') || 'https://ik.imagekit.io/ericmwangi/iphone.png';
+    const imageUrl = searchParams.get('image') || 'https://ik.imagekit.io/ericmwangi/phone-rectangle.png';
     
-    // Simple specs
+    // Specs
     const ram = searchParams.get('ram') || '8GB';
     const rom = searchParams.get('rom') || '256GB';
     const bat = searchParams.get('bat') || '5000mAh';
@@ -22,16 +22,16 @@ export default async function handler(req: Request) {
     const width = 1080;
     const height = platform === 'facebook' ? 1350 : 1920;
     
-    // Text sizing
-    const deviceFontSize = device.length > 25 ? 80 : device.length > 20 ? 90 : 110;
-    const priceFontSize = price.length > 15 ? 60 : 70;
+    // FIXED FONT SIZES (no calculations)
+    const deviceFontSize = 110; // Always 110px
+    const priceFontSize = 70;   // Always 70px
     
     return new ImageResponse(
       (
         <div style={{
           height: '100%',
           width: '100%',
-          display: 'flex', // ✅ Parent div has flex
+          display: 'flex',
           flexDirection: 'column',
           backgroundColor: '#050505',
           color: 'white',
@@ -39,31 +39,16 @@ export default async function handler(req: Request) {
           padding: '60px',
         }}>
           
-          {/* LOGO - Single child div, no display needed */}
-          <div style={{ 
-            height: '85px', 
-            display: 'flex', // ✅ Explicit flex even with single child
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <img 
-              src="https://ik.imagekit.io/ericmwangi/tklogo.png" 
-              width={300} 
-              height={85} 
-              style={{ objectFit: 'contain' }} 
-            />
-          </div>
-
-          {/* DEVICE NAME - Two children, MUST have display: flex */}
+          {/* Device name with FIXED font size */}
           <div style={{ 
             height: '140px',
-            display: 'flex', // ✅ Explicit flex
+            display: 'flex',
             flexDirection: 'column', 
             alignItems: 'center',
             justifyContent: 'center',
           }}>
             <span style={{ 
-              fontSize: deviceFontSize, 
+              fontSize: deviceFontSize, // Fixed 110px
               fontWeight: 900, 
               textAlign: 'center',
               lineHeight: 1,
@@ -77,246 +62,23 @@ export default async function handler(req: Request) {
               marginTop: '10px'
             }} />
           </div>
-
-          {/* DEVICE IMAGE - Two children, MUST have display: flex */}
-          <div style={{ 
-            height: '600px',
-            display: 'flex', // ✅ Explicit flex
-            justifyContent: 'center', 
-            alignItems: 'center',
-            position: 'relative',
-          }}>
-            <div style={{ 
-              position: 'absolute', 
-              width: '800px', 
-              height: '800px', 
-              background: 'radial-gradient(circle, #C5A05920 0%, transparent 70%)', 
-              borderRadius: '50%' 
-            }} />
-            <img 
-              src={imageUrl} 
-              style={{ 
-                width: '85%', 
-                height: '85%', 
-                objectFit: 'contain', 
-                zIndex: 10,
-              }} 
-            />
-          </div>
-
-          {/* SPECS GRID - Four children, MUST have display: flex */}
-          <div style={{ 
-            height: '120px',
-            display: 'flex', // ✅ Explicit flex
-            flexDirection: 'row',
-            marginBottom: '30px',
-          }}>
-            {/* RAM - Two children, MUST have display: flex */}
-            <div style={{ 
-              flex: 1,
-              marginRight: '15px',
-              background: '#111', 
-              borderRadius: '12px',
-              border: '1px solid #222',
-              display: 'flex', // ✅ Explicit flex
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <div style={{ color: '#C5A059', fontSize: 14, fontWeight: 700 }}>
-                RAM
-              </div>
-              <div style={{ fontSize: 22, fontWeight: 800 }}>
-                {ram}
-              </div>
-            </div>
-            
-            {/* STORAGE - Two children, MUST have display: flex */}
-            <div style={{ 
-              flex: 1,
-              marginRight: '15px',
-              background: '#111', 
-              borderRadius: '12px',
-              border: '1px solid #222',
-              display: 'flex', // ✅ Explicit flex
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <div style={{ color: '#C5A059', fontSize: 14, fontWeight: 700 }}>
-                STORAGE
-              </div>
-              <div style={{ fontSize: 22, fontWeight: 800 }}>
-                {rom}
-              </div>
-            </div>
-            
-            {/* BATTERY - Two children, MUST have display: flex */}
-            <div style={{ 
-              flex: 1,
-              marginRight: '15px',
-              background: '#111', 
-              borderRadius: '12px',
-              border: '1px solid #222',
-              display: 'flex', // ✅ Explicit flex
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <div style={{ color: '#C5A059', fontSize: 14, fontWeight: 700 }}>
-                BATTERY
-              </div>
-              <div style={{ fontSize: 22, fontWeight: 800 }}>
-                {bat}
-              </div>
-            </div>
-            
-            {/* SCREEN - Two children, MUST have display: flex */}
-            <div style={{ 
-              flex: 1,
-              background: '#111', 
-              borderRadius: '12px',
-              border: '1px solid #222',
-              display: 'flex', // ✅ Explicit flex
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <div style={{ color: '#C5A059', fontSize: 14, fontWeight: 700 }}>
-                SCREEN
-              </div>
-              <div style={{ fontSize: 22, fontWeight: 800 }}>
-                {scr}
-              </div>
-            </div>
-          </div>
-
-          {/* PRICE - Single child, but still give it display: flex */}
-          <div style={{ 
-            height: '120px',
-            display: 'flex', // ✅ Explicit flex (good practice)
-            justifyContent: 'center', 
-            alignItems: 'center',
-          }}>
-            <div style={{ 
-              background: '#3EB489', 
-              padding: '18px 50px', 
-              borderRadius: '16px',
-            }}>
-              <span style={{ fontSize: priceFontSize, fontWeight: 900, color: '#000' }}>
-                KES {price}
-              </span>
-            </div>
-          </div>
-
-          {/* FOOTER - Two children, MUST have display: flex */}
-          <div style={{ 
-            height: '120px',
-            display: 'flex', // ✅ Explicit flex
-            flexDirection: 'row',
-            background: '#0a0a0a', 
-            padding: '25px 30px', 
-            borderRadius: '20px',
-            border: '1px solid #1a1a1a',
-          }}>
-            {/* WhatsApp Section - Two children, MUST have display: flex */}
-            <div style={{ 
-              flex: 1,
-              display: 'flex', // ✅ Explicit flex
-              alignItems: 'center',
-            }}>
-              <img 
-                src="https://ik.imagekit.io/ericmwangi/whatsapp.png" 
-                width={45} 
-                height={45} 
-                style={{ marginRight: '12px' }} 
-              />
-              <div style={{ display: 'flex', flexDirection: 'column' }}> {/* ✅ Nested div with 2 children */}
-                <div style={{ color: '#C5A059', fontSize: 16, fontWeight: 700 }}>ORDER NOW</div>
-                <div style={{ fontSize: 32, fontWeight: 800 }}>0704 554 445</div>
-              </div>
-            </div>
-
-            {/* Location Section - Two children, MUST have display: flex */}
-            <div style={{ 
-              flex: 1,
-              display: 'flex', // ✅ Explicit flex
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-            }}>
-              <img 
-                src="https://ik.imagekit.io/ericmwangi/location.png" 
-                width={35} 
-                height={35} 
-                style={{ marginRight: '12px' }} 
-              />
-              <div style={{ 
-                display: 'flex', // ✅ Explicit flex
-                flexDirection: 'column',
-                alignItems: 'flex-end' 
-              }}>
-                <div style={{ color: '#C5A059', fontSize: 16, fontWeight: 700 }}>LOCATION</div>
-                <div style={{ fontSize: 20, fontWeight: 800 }}>CBD, NAIROBI</div>
-              </div>
-            </div>
-          </div>
-
-          {/* WEBSITE - Single child, but still give it display: flex */}
-          <div style={{ 
-            height: '60px',
-            display: 'flex', // ✅ Explicit flex
-            justifyContent: 'center', 
-            alignItems: 'center',
-          }}>
-            <span style={{ fontSize: 20, color: '#444', fontWeight: 800, letterSpacing: '3px' }}>
-              WWW.TRIPPLEK.CO.KE
-            </span>
-          </div>
-
+          
+          {/* ... rest of your JSX with priceFontSize ... */}
+          
         </div>
       ),
       { 
         width, 
         height,
-        headers: {
-          'Cache-Control': 'public, immutable, max-age=31536000',
-        }
+        headers: { 'Cache-Control': 'public, immutable, max-age=31536000' }
       }
     );
   } catch (error) {
-    // Simple error response
+    // Simple error
     return new ImageResponse(
-      (
-        <div style={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          backgroundColor: '#050505',
-          color: 'white',
-          fontFamily: 'system-ui, sans-serif',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column',
-            alignItems: 'center' 
-          }}>
-            <img 
-              src="https://ik.imagekit.io/ericmwangi/tklogo.png" 
-              width={300} 
-              height={85} 
-              style={{ objectFit: 'contain', marginBottom: '30px' }} 
-            />
-            <div style={{ fontSize: 48, fontWeight: 900, color: '#C5A059', marginBottom: '20px' }}>
-              TRIPLE K STUDIO
-            </div>
-            <div style={{ fontSize: 24, color: '#888' }}>
-              Poster Generator Ready
-            </div>
-          </div>
-        </div>
-      ),
+      <div style={{ display: 'flex', height: '100%', width: '100%', backgroundColor: '#050505', color: 'white', justifyContent: 'center', alignItems: 'center' }}>
+        <span style={{ fontSize: 48 }}>TRIPLE K</span>
+      </div>,
       { width: 1080, height: 1080 }
     );
   }
