@@ -9,7 +9,7 @@ export default async function handler(req: Request) {
     // Get ONLY dynamic text content
     const device = searchParams.get('device')?.toUpperCase() || 'NEW DEVICE';
     const price = searchParams.get('price') || 'PRICE ON REQUEST';
-    const imageUrl = searchParams.get('image') || 'https://ik.imagekit.io/ericmwangi/phone-rectangle.png';
+    const imageUrl = searchParams.get('image') || 'https://ik.imagekit.io/ericmwangi/iphone.png';
     
     // Simple specs
     const ram = searchParams.get('ram') || '8GB';
