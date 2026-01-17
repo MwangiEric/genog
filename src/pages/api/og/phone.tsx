@@ -2,134 +2,294 @@ import { ImageResponse } from '@vercel/og';
 
 export const config = { runtime: 'edge' };
 
+// Simple in-memory fallbacks
+const BRAND = {
+  logo: 'https://ik.imagekit.io/ericmwangi/tklogo.png',
+  whatsappIcon: 'https://ik.imagekit.io/ericmwangi/whatsapp.png',
+  locationIcon: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+  defaultPhone: 'https://ik.imagekit.io/ericmwangi/default-phone.png'
+};
+
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url);
-  
-  // Platform Detection for WhatsApp/FB/TikTok
-  const platform = searchParams.get('platform') || 'whatsapp'; 
+
+  // Platform sizes
+  const platform = searchParams.get('platform') || 'whatsapp';
   const width = 1080;
-  let height = 1920;
-  let paddingBottom = '60px'; 
+  const height = platform === 'facebook' ? 1350 : 1920;
 
-  if (platform === 'facebook') {
-    height = 1350; 
-  } else if (platform === 'tiktok') {
-    paddingBottom = '320px'; // Safe zone for TikTok UI
-  }
-
-  // Content Params
-  const device = searchParams.get('device')?.toUpperCase() || 'IPHONE 16 PRO MAX';
-  const price  = searchParams.get('price') || '150,000';
-  const imageUrl = searchParams.get('image');
-  
-  // All Specs Params
-  const ram = searchParams.get('ram') || '8GB';
-  const rom = searchParams.get('rom') || '256GB';
-  const bat = searchParams.get('bat') || '5000mAh';
-  const cam = searchParams.get('cam') || '48MP';
-
+  // Safe parameters
+  const device = (searchParams.get('device') || 'NEW DEVICE').toUpperCase();
+  const price = searchParams.get('price') || 'PRICE ON REQUEST';
   const glowHex = searchParams.get('glow') || 'C5A059';
+  
+  // Get image URL safely
+  let imageUrl = searchParams.get('image') || BRAND.defaultPhone;
+  if (!imageUrl.startsWith('http')) imageUrl = BRAND.defaultPhone;
+
+  // Specs
+  const specs = {
+    ram: searchParams.get('ram') || 'RAM',
+    rom: searchParams.get('rom') || 'STORAGE',
+    bat: searchParams.get('bat') || 'BATTERY',
+    cam: searchParams.get('cam') || 'CAMERA',
+  };
+
+  // Text sizing
+  const deviceFontSize = device.length > 25 ? 80 : device.length > 20 ? 90 : 110;
+  const priceFontSize = price.length > 15 ? 60 : 70;
 
   return new ImageResponse(
     (
       <div style={{
-        height: '100%', width: '100%',
-        display: 'flex', flexDirection: 'column',
-        backgroundColor: '#050505', color: 'white',
-        fontFamily: 'sans-serif',
-        padding: `60px 60px ${paddingBottom} 60px`,
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#050505',
+        color: 'white',
+        fontFamily: 'system-ui, sans-serif',
+        padding: '60px',
       }}>
         
-        {/* 1. TOP LOGO */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-          <img src="https://ik.imagekit.io/ericmwangi/tklogo.png" width={320} height={90} style={{ objectFit: 'contain' }} />
+        {/* LOGO - Fixed at top */}
+        <div style={{ 
+          height: '85px', 
+          display: 'flex', 
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <img 
+            src={BRAND.logo} 
+            width={300} 
+            height={85} 
+            style={{ objectFit: 'contain' }} 
+          />
         </div>
 
-        {/* 2. BIG DEVICE NAME (High-End Typography) */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 10 }}>
+        {/* DEVICE NAME - Fixed height container */}
+        <div style={{ 
+          height: '140px',
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
           <span style={{ 
-            fontSize: device.length > 15 ? 90 : 130, 
+            fontSize: deviceFontSize, 
             fontWeight: 900, 
-            textAlign: 'center', 
-            letterSpacing: -5, 
-            lineHeight: 0.85,
-            textShadow: '0 10px 30px rgba(0,0,0,0.5)'
+            textAlign: 'center',
+            lineHeight: 1,
           }}>
             {device}
           </span>
-          <div style={{ height: 4, width: 100, background: '#C5A059', marginTop: 20 }} />
-        </div>
-
-        {/* 3. HERO AREA */}
-        <div style={{ display: 'flex', flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
           <div style={{ 
-            position: 'absolute', width: 900, height: 900, 
-            background: `radial-gradient(circle, #${glowHex}20 0%, transparent 75%)`, 
-            borderRadius: '50%', display: 'flex' 
+            height: 4, 
+            width: 80, 
+            background: '#C5A059',
+            marginTop: '10px'
           }} />
-          {imageUrl && <img src={imageUrl} style={{ width: '95%', height: '85%', objectFit: 'contain', zIndex: 10 }} />}
         </div>
 
-        {/* 4. ALL SPECS GRID (Clean & Professional) */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 15, marginBottom: 40 }}>
-          {[
-            { label: 'RAM', val: ram },
-            { label: 'STORAGE', val: rom },
-            { label: 'BATTERY', val: bat },
-            { label: 'CAMERA', val: cam }
-          ].map((spec) => (
-            <div key={spec.label} style={{ 
-              display: 'flex', flexDirection: 'column', alignItems: 'center', 
-              background: '#111', padding: '15px 25px', borderRadius: 15, border: '1px solid #222' 
-            }}>
-              <span style={{ color: '#C5A059', fontSize: 14, fontWeight: 800, marginBottom: 5 }}>{spec.label}</span>
-              <span style={{ fontSize: 24, fontWeight: 900 }}>{spec.val}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* 5. PRICE SECTION (istreet Green Style) */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 50 }}>
+        {/* DEVICE IMAGE - Fixed height (FLEX: 1 is problematic in Satori) */}
+        <div style={{ 
+          height: '600px',
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          position: 'relative',
+        }}>
           <div style={{ 
-            display: 'flex', backgroundColor: '#3EB489', 
-            padding: '20px 80px', borderRadius: 20,
-            boxShadow: '0 20px 40px rgba(62, 180, 137, 0.2)'
+            position: 'absolute', 
+            width: '800px', 
+            height: '800px', 
+            background: `radial-gradient(circle, #${glowHex}20 0%, transparent 70%)`, 
+            borderRadius: '50%' 
+          }} />
+          <img 
+            src={imageUrl} 
+            style={{ 
+              width: '85%', 
+              height: '85%', 
+              objectFit: 'contain', 
+              zIndex: 10,
+            }} 
+          />
+        </div>
+
+        {/* SPECS GRID - Fixed height and explicit widths (NO FLEX-WRAP) */}
+        <div style={{ 
+          height: '120px',
+          display: 'flex', 
+          flexDirection: 'row',
+          marginBottom: '30px',
+        }}>
+          {/* RAM */}
+          <div style={{ 
+            flex: 1,
+            marginRight: '15px',
+            background: '#111', 
+            borderRadius: '12px',
+            border: '1px solid #222',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-            <span style={{ fontSize: 80, fontWeight: 900, color: '#000' }}>KES {price}</span>
+            <div style={{ color: '#C5A059', fontSize: 14, fontWeight: 700 }}>
+              RAM
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800 }}>
+              {specs.ram}
+            </div>
+          </div>
+          
+          {/* STORAGE */}
+          <div style={{ 
+            flex: 1,
+            marginRight: '15px',
+            background: '#111', 
+            borderRadius: '12px',
+            border: '1px solid #222',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <div style={{ color: '#C5A059', fontSize: 14, fontWeight: 700 }}>
+              STORAGE
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800 }}>
+              {specs.rom}
+            </div>
+          </div>
+          
+          {/* BATTERY */}
+          <div style={{ 
+            flex: 1,
+            marginRight: '15px',
+            background: '#111', 
+            borderRadius: '12px',
+            border: '1px solid #222',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <div style={{ color: '#C5A059', fontSize: 14, fontWeight: 700 }}>
+              BATTERY
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800 }}>
+              {specs.bat}
+            </div>
+          </div>
+          
+          {/* CAMERA */}
+          <div style={{ 
+            flex: 1,
+            background: '#111', 
+            borderRadius: '12px',
+            border: '1px solid #222',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <div style={{ color: '#C5A059', fontSize: 14, fontWeight: 700 }}>
+              CAMERA
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800 }}>
+              {specs.cam}
+            </div>
           </div>
         </div>
 
-        {/* 6. FOOTER: WHATSAPP & LOCATION ICONS */}
+        {/* PRICE - Fixed height */}
         <div style={{ 
-          display: 'flex', width: '100%', background: '#0a0a0a', padding: '35px', 
-          borderRadius: 35, border: '1px solid #1a1a1a', justifyContent: 'space-between', alignItems: 'center' 
+          height: '120px',
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
         }}>
-           {/* WhatsApp */}
-           <div style={{ display: 'flex', alignItems: 'center' }}>
-              <img src="https://ik.imagekit.io/ericmwangi/whatsapp.png" width={55} height={55} style={{ marginRight: 15 }} />
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ color: '#C5A059', fontSize: 18, fontWeight: 800 }}>ORDER NOW</span>
-                <span style={{ fontSize: 38, fontWeight: 900 }}>0704 554 445</span>
-              </div>
-           </div>
-           
-           {/* Location */}
-           <div style={{ display: 'flex', alignItems: 'center' }}>
-              <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" width={40} height={40} style={{ marginRight: 15 }} />
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <span style={{ color: '#C5A059', fontSize: 18, fontWeight: 800 }}>LOCATION</span>
-                <span style={{ fontSize: 22, fontWeight: 900 }}>CBD, NAIROBI</span>
-              </div>
-           </div>
+          <div style={{ 
+            background: '#3EB489', 
+            padding: '18px 50px', 
+            borderRadius: '16px',
+          }}>
+            <span style={{ fontSize: priceFontSize, fontWeight: 900, color: '#000' }}>
+              KES {price}
+            </span>
+          </div>
         </div>
 
-        {/* WEBSITE */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 25 }}>
-          <span style={{ fontSize: 24, color: '#333', fontWeight: 800, letterSpacing: 6 }}>WWW.TRIPPLEK.CO.KE</span>
+        {/* FOOTER - Fixed height */}
+        <div style={{ 
+          height: '120px',
+          display: 'flex', 
+          flexDirection: 'row',
+          background: '#0a0a0a', 
+          padding: '25px 30px', 
+          borderRadius: '20px',
+          border: '1px solid #1a1a1a',
+        }}>
+          {/* Left: WhatsApp */}
+          <div style={{ 
+            flex: 1,
+            display: 'flex', 
+            alignItems: 'center',
+          }}>
+            <img 
+              src={BRAND.whatsappIcon} 
+              width={45} 
+              height={45} 
+              style={{ marginRight: '12px' }} 
+            />
+            <div>
+              <div style={{ color: '#C5A059', fontSize: 16, fontWeight: 700 }}>ORDER NOW</div>
+              <div style={{ fontSize: 32, fontWeight: 800 }}>0704 554 445</div>
+            </div>
+          </div>
+
+          {/* Right: Location */}
+          <div style={{ 
+            flex: 1,
+            display: 'flex', 
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+          }}>
+            <img 
+              src={BRAND.locationIcon} 
+              width={35} 
+              height={35} 
+              style={{ marginRight: '12px' }} 
+            />
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ color: '#C5A059', fontSize: 16, fontWeight: 700 }}>LOCATION</div>
+              <div style={{ fontSize: 20, fontWeight: 800 }}>CBD, NAIROBI</div>
+            </div>
+          </div>
+        </div>
+
+        {/* WEBSITE - Fixed height */}
+        <div style={{ 
+          height: '60px',
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+        }}>
+          <span style={{ fontSize: 20, color: '#444', fontWeight: 800, letterSpacing: '3px' }}>
+            WWW.TRIPPLEK.CO.KE
+          </span>
         </div>
 
       </div>
     ),
-    { width, height }
+    { 
+      width, 
+      height,
+      headers: {
+        'Cache-Control': 'public, immutable, max-age=31536000',
+      }
+    }
   );
 }
