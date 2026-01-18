@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from '@vercel/og';
 
 export const config = { runtime: 'edge' };
@@ -33,7 +34,7 @@ export default async function handler(req: Request) {
 
           {/* 1. TOP LOGO */}
           <div style={{ display: 'flex', marginBottom: 20 }}>
-            <img src="https://ik.imagekit.io/ericmwangi/tklogo.png" width={320} height={90} style={{ objectFit: 'contain' }} />
+            <img src="https://ik.imagekit.io/ericmwangi/tklogo.png" width={320} height={90} alt="Tripple K Logo" style={{ objectFit: 'contain' }} />
           </div>
 
           {/* 2. DEVICE NAME */}
@@ -56,7 +57,7 @@ export default async function handler(req: Request) {
             }} />
             
             {imageUrl ? (
-              <img src={imageUrl} style={{ width: '92%', height: '82%', objectFit: 'contain', zIndex: 10 }} />
+              <img src={imageUrl} alt="Device Image" style={{ width: '92%', height: '82%', objectFit: 'contain', zIndex: 10 }} />
             ) : (
               <div style={{ 
                   width: '60%', height: '65%', borderRadius: 40, border: '2px dashed #333',
@@ -103,7 +104,7 @@ export default async function handler(req: Request) {
           }}>
              {/* Left side: Contact */}
              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="https://ik.imagekit.io/ericmwangi/whatsapp.png" width={65} height={65} style={{ marginRight: 20 }} />
+                <img src="https://ik.imagekit.io/ericmwangi/whatsapp.png" width={65} height={65} alt="WhatsApp Icon" style={{ marginRight: 20 }} />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <span style={{ color: GOLD, fontSize: 16, fontWeight: 800 }}>WHATSAPP / CALL</span>
                   <span style={{ fontSize: 36, fontWeight: 900 }}>0733 565861</span>
@@ -111,13 +112,13 @@ export default async function handler(req: Request) {
                 </div>
              </div>
 
-             {/* Right side: Location */}
+             {/* Right side: Location with Icon */}
              <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginRight: 20 }}>
                   <span style={{ color: GOLD, fontSize: 16, fontWeight: 800 }}>LOCATION</span>
                   <span style={{ fontSize: 24, fontWeight: 900 }}>CBD OPP. MKU</span>
                 </div>
-                <img src="https://ik.imagekit.io/ericmwangi/location.png" width={55} height={55} />
+                <img src="https://ik.imagekit.io/ericmwangi/location.png" width={55} height={55} alt="Location Icon" />
              </div>
           </div>
 
