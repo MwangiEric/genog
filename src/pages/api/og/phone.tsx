@@ -2,22 +2,11 @@ import { ImageResponse } from '@vercel/og';
 
 export const config = { runtime: 'edge' };
 
-// 1. CONSTANTS (Your Branding & New Contact Info)
-const BRAND = {
-  maroon: '#800000',
-  gold: '#C5A059',
-  mint: '#3EB489',
-  dark: '#050505',
-  whatsapp: '0733 565861',
-  call: '0715 130013',
-  location: 'CBD OPP. MKU'
-};
-
-export async function GET(req: Request) {
+export default async function handler(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
 
-    // 2. DATA FALLBACKS
+    // Content Params
     const device = searchParams.get('device')?.toUpperCase() || 'PREMIUM DEVICE';
     const price = searchParams.get('price') || 'TBD';
     const ram = searchParams.get('ram') || '---';
@@ -26,80 +15,115 @@ export async function GET(req: Request) {
     const scr = searchParams.get('scr') || '---';
     const imageUrl = searchParams.get('image');
 
+    // Branding Constants
+    const MAROON = '#800000';
+    const GOLD = '#C5A059';
+    const MINT = '#3EB489';
+
     return new ImageResponse(
       (
-        <div tw="flex flex-col w-full h-full bg-[#050505] text-white p-[60px] items-center">
-          
-          {/* TOP LOGO */}
-          <img src="https://ik.imagekit.io/ericmwangi/tklogo.png" tw="w-[320px] h-[90px] mb-6" />
+        <div style={{
+          height: '100%', width: '100%',
+          display: 'flex', flexDirection: 'column',
+          backgroundColor: '#050505', color: 'white',
+          fontFamily: 'sans-serif',
+          padding: '60px 50px',
+          alignItems: 'center'
+        }}>
 
-          {/* DEVICE NAME */}
-          <div tw="flex flex-col items-center mb-4">
-            <span tw="text-[110px] font-black text-center leading-none tracking-tighter">
-              {device}
-            </span>
-            <div tw={`h-2 w-40 bg-[${BRAND.maroon}] mt-4`} />
+          {/* 1. TOP LOGO */}
+          <div style={{ display: 'flex', marginBottom: 20 }}>
+            <img src="https://ik.imagekit.io/ericmwangi/tklogo.png" width={320} height={90} style={{ objectFit: 'contain' }} />
           </div>
 
-          {/* HERO AREA (White Spotlight) */}
-          <div tw="flex flex-1 w-full justify-center items-center relative">
-            <div tw="absolute w-[850px] h-[850px] rounded-full" 
-                 style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)' }} />
+          {/* 2. DEVICE NAME */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 10 }}>
+            <span style={{ 
+              fontSize: device.length > 15 ? 80 : 110, 
+              fontWeight: 900, textAlign: 'center', letterSpacing: -4, lineHeight: 0.9 
+            }}>
+              {device}
+            </span>
+            <div style={{ height: 6, width: 140, background: MAROON, marginTop: 15 }} />
+          </div>
+
+          {/* 3. HERO AREA */}
+          <div style={{ display: 'flex', flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+            <div style={{ 
+              position: 'absolute', width: 900, height: 900, 
+              background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)', 
+              borderRadius: '50%', display: 'flex' 
+            }} />
             
             {imageUrl ? (
-              <img src={imageUrl} tw="w-[90%] h-[80%] object-contain z-10" />
+              <img src={imageUrl} style={{ width: '92%', height: '82%', objectFit: 'contain', zIndex: 10 }} />
             ) : (
-              <div tw="w-[60%] h-[65%] border-4 border-dashed border-gray-800 rounded-[40px] flex items-center justify-center z-10">
-                <span tw="text-gray-700 text-4xl font-bold">IMAGE PENDING</span>
+              <div style={{ 
+                  width: '60%', height: '65%', borderRadius: 40, border: '2px dashed #333',
+                  backgroundColor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10
+              }}>
+                  <span style={{ color: '#444', fontSize: 32, fontWeight: 800 }}>IMAGE PENDING</span>
               </div>
             )}
           </div>
 
-          {/* SPECS GRID (4 Specs) */}
-          <div tw="flex flex-wrap justify-center mb-10 w-full">
+          {/* 4. SPECS GRID */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 15, marginBottom: 40 }}>
             {[
               { label: 'SCREEN', val: scr },
               { label: 'RAM', val: ram },
               { label: 'STORAGE', val: rom },
               { label: 'BATTERY', val: bat }
             ].map((spec) => (
-              <div key={spec.label} tw="flex flex-col items-center bg-[#111] p-6 m-2 rounded-2xl border border-gray-900 min-w-[220px]">
-                <span tw={`text-[${BRAND.gold}] text-lg font-extrabold mb-1`}>{spec.label}</span>
-                <span tw="text-3xl font-black">{spec.val}</span>
+              <div key={spec.label} style={{ 
+                display: 'flex', flexDirection: 'column', alignItems: 'center', 
+                background: '#0f0f0f', padding: '20px 10px', borderRadius: 20, 
+                border: '1px solid #222', minWidth: '220px' 
+              }}>
+                <span style={{ color: GOLD, fontSize: 18, fontWeight: 800, marginBottom: 5 }}>{spec.label}</span>
+                <span style={{ fontSize: 32, fontWeight: 900 }}>{spec.val}</span>
               </div>
             ))}
           </div>
 
-          {/* PRICE SECTION */}
-          <div tw={`flex bg-[${BRAND.mint}] px-24 py-6 rounded-[30px] mb-10`}>
-            <span tw="text-8xl font-black text-black">KES {price}</span>
+          {/* 5. PRICE SECTION */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 50 }}>
+            <div style={{ 
+              display: 'flex', backgroundColor: MINT, padding: '22px 90px', borderRadius: 25,
+              boxShadow: '0 20px 50px rgba(62, 180, 137, 0.3)'
+            }}>
+              <span style={{ fontSize: 85, fontWeight: 900, color: '#000' }}>KES {price}</span>
+            </div>
           </div>
 
-          {/* FOOTER: WHATSAPP & LOCATION */}
-          <div tw={`flex w-full bg-[#0a0a0a] p-8 rounded-[40px] border border-[${BRAND.maroon}]40 justify-between items-center`}>
-             {/* Left: Call & WhatsApp */}
-             <div tw="flex items-center">
-                <img src="https://ik.imagekit.io/ericmwangi/whatsapp.png" tw="w-16 h-16 mr-4" />
-                <div tw="flex flex-col">
-                  <span tw={`text-[${BRAND.gold}] text-sm font-bold`}>CALL/WHATSAPP</span>
-                  <span tw="text-3xl font-black">{BRAND.whatsapp}</span>
-                  <span tw="text-xl font-bold opacity-70">{BRAND.call}</span>
+          {/* 6. FOOTER */}
+          <div style={{ 
+            display: 'flex', width: '100%', background: '#0a0a0a', padding: '35px', 
+            borderRadius: 40, border: `1px solid rgba(128,0,0,0.3)`, justifyContent: 'space-between', alignItems: 'center' 
+          }}>
+             {/* Left side: Contact */}
+             <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img src="https://ik.imagekit.io/ericmwangi/whatsapp.png" width={65} height={65} style={{ marginRight: 20 }} />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ color: GOLD, fontSize: 16, fontWeight: 800 }}>WHATSAPP / CALL</span>
+                  <span style={{ fontSize: 36, fontWeight: 900 }}>0733 565861</span>
+                  <span style={{ fontSize: 24, fontWeight: 800, opacity: 0.7 }}>0715 130013</span>
                 </div>
              </div>
 
-             {/* Right: Location */}
-             <div tw="flex items-center">
-                <div tw="flex flex-col items-end mr-4">
-                  <span tw={`text-[${BRAND.gold}] text-sm font-bold`}>LOCATION</span>
-                  <span tw="text-2xl font-black">{BRAND.location}</span>
+             {/* Right side: Location */}
+             <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginRight: 20 }}>
+                  <span style={{ color: GOLD, fontSize: 16, fontWeight: 800 }}>LOCATION</span>
+                  <span style={{ fontSize: 24, fontWeight: 900 }}>CBD OPP. MKU</span>
                 </div>
-                <img src="https://ik.imagekit.io/ericmwangi/location.png" tw="w-14 h-14" />
+                <img src="https://ik.imagekit.io/ericmwangi/location.png" width={55} height={55} />
              </div>
           </div>
 
-          {/* BOTTOM URL (Simple text, no icon) */}
-          <div tw="flex mt-8">
-            <span tw="text-2xl text-gray-700 font-bold tracking-[10px]">WWW.TRIPPLEK.CO.KE</span>
+          {/* 7. WEBSITE */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30 }}>
+            <span style={{ fontSize: 22, color: '#333', fontWeight: 800, letterSpacing: 10 }}>WWW.TRIPPLEK.CO.KE</span>
           </div>
 
         </div>
@@ -107,6 +131,6 @@ export async function GET(req: Request) {
       { width: 1080, height: 1920 }
     );
   } catch (e: any) {
-    return new Response(`Error: ${e.message}`, { status: 500 });
+    return new Response(`Generation failed`, { status: 500 });
   }
 }
