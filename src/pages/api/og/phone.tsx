@@ -137,7 +137,7 @@ export default async function handler(req: Request) {
 
         {/* 7. WEBSITE (With New Web Icon) */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 30 }}>
-          <img src="https://ik.imagekit.io/ericmwangi/web.png" width={30} height={30} style={{ marginRight: 15, opacity: 0.6 }} />
+          <img src="https://ik.imagekit.io/ericmwangi/location.png" width={30} height={30} style={{ marginRight: 15, opacity: 0.6 }} />
           <span style={{ fontSize: 24, color: '#444', fontWeight: 800, letterSpacing: 10 }}>WWW.TRIPPLEK.CO.KE</span>
         </div>
 
