@@ -4,7 +4,8 @@ import { ImageResponse } from '@vercel/og';
 export const config = { runtime: 'edge' };
 
 // Format number with commas
-function formatPrice(price) {
+function formatPrice(price: string | null | undefined): string {
+  if (!price) return '0';
   const num = parseInt(price.replace(/[^0-9]/g, ''), 10);
   if (isNaN(num)) return price;
   return num.toLocaleString('en-US');
@@ -18,7 +19,7 @@ export default async function handler(req: Request) {
     const height = 1920;
 
     const fullDeviceName = searchParams.get('device')?.toUpperCase() || 'PREMIUM DEVICE';
-    const price = searchPrice(searchParams.get('price') || '0');
+    const price = formatPrice(searchParams.get('price'));
     const imageUrl = searchParams.get('image');
 
     // Split logic: Brand is the first word, Model is the rest
@@ -86,7 +87,7 @@ export default async function handler(req: Request) {
             display: 'flex', backgroundColor: MAROON, padding: '25px 80px', borderRadius: 30, marginTop: 40,
             boxShadow: '0 15px 35px rgba(128, 0, 0, 0.2)'
           }}>
-            <span style={{ fontSize: 85, fontWeight: 900, color: '#FFFFFF' }}>KES {formatPrice(price)}</span>
+            <span style={{ fontSize: 85, fontWeight: 900, color: '#FFFFFF' }}>KES {price}</span>
           </div>
 
           {/* 5. FIXED FOOTER */}
